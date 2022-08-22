@@ -1,5 +1,5 @@
 import express, { Request, Response } from "express";
-import { getTopics } from "../controllers/topics.controller";
+import { getTopics } from "../controllers/topics.controllers";
 
 export const topicsRouter = express.Router();
 
