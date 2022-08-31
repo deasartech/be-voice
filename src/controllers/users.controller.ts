@@ -26,11 +26,16 @@ export const postUser = async (req: Request, res: Response) => {
 export const postLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const credentials = Realm.Credentials.emailPassword(email, password);
-    const user = await realm.logIn(credentials);
-    console.log(`Successfully logged in as user ${user.id}`);
-    console.log("user: ", user.id);
-    res.status(200).send({ msg: "Successfully logged in!", userId: user.id });
+    const credentials: Realm.Credentials = Realm.Credentials.emailPassword(
+      email,
+      password
+    );
+    const user: Realm.User = await realm.logIn(credentials);
+    console.log(`Successfully signed in as user ${user.id}`);
+    console.log("user: ", user.profile);
+    res
+      .status(200)
+      .send({ msg: "Successfully signed in!", user: user.profile });
   } catch (err) {
     console.error(err.message);
     res.status(401).send({ msg: "Error signing in!" });
@@ -41,6 +46,7 @@ export const postLogin = async (req: Request, res: Response) => {
 export const getSignOutUser = async (req: Request, res: Response) => {
   try {
     await realm.currentUser.logOut();
+    console.log(`Successfully signed out user`);
     res.status(200).send({ msg: "Successfully signed out" });
   } catch (err) {
     console.error(err.message);
@@ -48,4 +54,14 @@ export const getSignOutUser = async (req: Request, res: Response) => {
   }
 };
 
-// new
+// GET current user
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    console.log(realm.currentUser.profile.email, "is currently signed in");
+    const user: Realm.User = realm.currentUser;
+    res.status(200).send({ user: user.profile, userId: user.id });
+  } catch (err) {
+    console.error(err.message);
+    res.status(401).send({ msg: err.message });
+  }
+};
