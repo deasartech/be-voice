@@ -4,6 +4,7 @@ import Realm from "realm";
 import * as dotenv from "dotenv";
 import { connectMongoose } from "./services/database.service";
 import { topicsRouter } from "./routes/topics.router";
+import { usersRouter } from "./routes/users.router";
 
 const app = express();
 app.use(cors());
@@ -29,6 +30,7 @@ connectMongoose()
 
     // set routers to use for each route
     app.use("/topics", topicsRouter);
+    app.use("/auth", usersRouter);
 
     // start the server
     app.listen(PORT, () => {
