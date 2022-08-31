@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import Realm from "realm";
 import * as dotenv from "dotenv";
-import { connectToDatabase } from "./services/database.service";
+import { connectMongoose } from "./services/database.service";
 import { topicsRouter } from "./routes/topics.router";
 
 const app = express();
@@ -10,7 +10,8 @@ app.use(cors());
 const { PORT = 9090 } = process.env;
 
 // make connection
-connectToDatabase()
+// connectToDatabase()
+connectMongoose()
   .then(() => {
     dotenv.config();
     const id = process.env.APP_ID;
@@ -19,6 +20,12 @@ connectToDatabase()
     };
     const realm = new Realm.App(config);
     app.use(express.json());
+
+    // test endpoint
+    app.get("/", (req: express.Request, res: express.Response) => {
+      res.setHeader("Content-Type", "text/html");
+      res.end("<h1>Hello World</h1>");
+    });
 
     // set routers to use for each route
     app.use("/topics", topicsRouter);
