@@ -7,3 +7,4 @@ dist/**/*
 
 # Ignore .env file for secrets
 .env
+.env.*
