@@ -6,7 +6,7 @@ dotenv.config();
 
 const realm = Realm.App.getApp(process.env.APP_ID);
 
-// POST signup new user
+// POST sign up new user
 export const postUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
@@ -22,7 +22,7 @@ export const postUser = async (req: Request, res: Response) => {
   }
 };
 
-// POST signin user
+// POST sign in user
 export const postLogin = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
@@ -32,7 +32,20 @@ export const postLogin = async (req: Request, res: Response) => {
     console.log("user: ", user.id);
     res.status(200).send({ msg: "Successfully logged in!", userId: user.id });
   } catch (err) {
-    console.error(err);
-    res.status(401).send("Error loggin in!");
+    console.error(err.message);
+    res.status(401).send({ msg: "Error signing in!" });
   }
 };
+
+// GET sign out current user
+export const getSignOutUser = async (req: Request, res: Response) => {
+  try {
+    await realm.currentUser.logOut();
+    res.status(200).send({ msg: "Successfully signed out" });
+  } catch (err) {
+    console.error(err.message);
+    res.status(401).send({ msg: "Error signing out!" });
+  }
+};
+
+// new
