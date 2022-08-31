@@ -3,15 +3,12 @@ import cors from "cors";
 import Realm from "realm";
 import * as dotenv from "dotenv";
 import { connectMongoose } from "./services/database.service";
-import { topicsRouter } from "./routes/topics.router";
-import { usersRouter } from "./routes/users.router";
+import { apiRouter } from "./routes/api.router";
 
 const app = express();
-app.use(cors());
 const { PORT = 9090 } = process.env;
 
 // make connection
-// connectToDatabase()
 connectMongoose()
   .then(() => {
     dotenv.config();
@@ -21,6 +18,7 @@ connectMongoose()
     };
     const realm = new Realm.App(config);
     app.use(express.json());
+    app.use(cors());
 
     // test endpoint
     app.get("/", (req: express.Request, res: express.Response) => {
@@ -28,9 +26,8 @@ connectMongoose()
       res.end("<h1>Hello World</h1>");
     });
 
-    // set routers to use for each route
-    app.use("/topics", topicsRouter);
-    app.use("/auth", usersRouter);
+    // set apiRouter
+    app.use("/api", apiRouter);
 
     // start the server
     app.listen(PORT, () => {
