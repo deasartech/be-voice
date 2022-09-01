@@ -17,9 +17,9 @@ export const getTopicBySlug = async (req: Request, res: Response) => {
     const topic = await TopicModel.find({ slug: word });
     topic.length
       ? res.status(200).send({ topic })
-      : res.status(404).send("Topic Not Found");
+      : res.status(404).send({ msg: "Topic Not Found" });
   } catch (err) {
     console.log(err);
-    res.status(404).send("Topic Not Found");
+    res.status(404).send({ msg: "Topic Not Found" });
   }
 };

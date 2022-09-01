@@ -17,3 +17,11 @@ export async function connectMongoose() {
 
   console.log(`Successfully connected to database: ${db}`);
 }
+
+export async function disconnectMongoose() {
+  try {
+    await mongoose.connection.close();
+  } catch (error) {
+    console.log("DB disconnect error");
+  }
+}

@@ -1,6 +1,6 @@
 module.exports = {
   // globalSetup: "./setup",
-  // globalTeardown: "./teardown.js",
+  globalTeardown: "./test-teardown-globals.ts",
   testEnvironment: "node",
   transform: {
     "^.+\\.jsx?$": "babel-jest",
