@@ -7,7 +7,7 @@ export interface ITopic extends Document {
   slug: string;
 }
 
-const TopicSchema: Schema = new Schema({
+export const TopicSchema: Schema = new Schema({
   _id: { type: ObjectId },
   description: { type: String, required: true },
   slug: { type: String, required: true },

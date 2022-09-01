@@ -5,7 +5,7 @@ import * as dotenv from "dotenv";
 import { connectMongoose } from "./services/database.service";
 import { apiRouter } from "./routes/api.router";
 
-const app = express();
+export const app = express();
 const { PORT = 9090 } = process.env;
 
 // make connection
