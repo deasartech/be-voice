@@ -7,7 +7,7 @@ export const getTopics = async (req: Request, res: Response) => {
     res.status(200).send({ topics });
   } catch (err) {
     console.log(err);
-    res.status(400).send("Topics Not Found");
+    res.status(404).send("Topics Not Found");
   }
 };
 
@@ -20,6 +20,6 @@ export const getTopicBySlug = async (req: Request, res: Response) => {
       : res.status(404).send({ msg: "Topic Not Found" });
   } catch (err) {
     console.log(err);
-    res.status(404).send({ msg: "Topic Not Found" });
+    res.status(400).send({ msg: "Topic Not Found" });
   }
 };

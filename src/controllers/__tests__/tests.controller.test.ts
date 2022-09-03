@@ -5,6 +5,7 @@ import {
   disconnectMongoose,
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
+import { IUser } from "../../models/users.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -42,7 +43,7 @@ describe("Topics", () => {
         });
     });
 
-    test("should return a topic of ':word' is valid ", () => {
+    test("should return a topic if ':word' is valid ", () => {
       return request(app)
         .get("/api/topics/comedy")
         .expect(200)
@@ -56,6 +57,75 @@ describe("Topics", () => {
           expect(obj).toHaveProperty("_id");
           expect(obj).toHaveProperty("description");
           expect(obj).toHaveProperty("slug");
+        });
+    });
+  });
+});
+
+// Users Tests
+
+describe("Users", () => {
+  describe("GET /users", () => {
+    test("should return all users", () => {
+      return request(app)
+        .get("/api/users")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { users } = body;
+          expect(users).toBeInstanceOf(Array);
+          users.forEach((user: IUser) => {
+            expect(user).toHaveProperty("email");
+            expect(user).toHaveProperty("username");
+            expect(user).toHaveProperty("uid");
+            expect(user._id).toEqual(expect.any(String));
+            expect(user.email).toEqual(expect.any(String));
+            expect(user.username).toEqual(expect.any(String));
+            expect(user.uid).toEqual(expect.any(String));
+          });
+        });
+    });
+  });
+
+  describe("GET /users/:username", () => {
+    test("should return a 404 status if user is not found", () => {
+      return request(app)
+        .get("/api/users/doesntexist")
+        .expect(404)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("User Not Found");
+        });
+    });
+
+    test("should return a user if ':username' is valid ", () => {
+      return request(app)
+        .get("/api/users/updated")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { user } = body;
+          console.log(user);
+          expect(user).toBeInstanceOf(Object);
+          expect(user).toHaveProperty("_id");
+          expect(user).toHaveProperty("email");
+          expect(user).toHaveProperty("username");
+          expect(user).toHaveProperty("uid");
+        });
+    });
+
+    test("should return response object if succesfully updates username ", () => {
+      const nameChange = {
+        newUsername: "newname",
+      };
+      return request(app)
+        .patch("/api/users/lol")
+        .send(nameChange)
+        .expect(200)
+        .then(({ body }: any) => {
+          const { response } = body;
+          console.log(response);
+          expect(response).toBeInstanceOf(Object);
+          expect(response).toHaveProperty("acknowledged");
+          expect(response).toHaveProperty("modifiedCount");
+          expect(response).toHaveProperty("matchedCount");
         });
     });
   });
