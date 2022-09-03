@@ -1,5 +1,5 @@
 import { ObjectId } from "mongodb";
-import mongoose, { Types, Schema, Document } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface ITopic extends Document {
   _id?: ObjectId;

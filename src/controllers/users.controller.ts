@@ -10,12 +10,12 @@ const realm = Realm.App.getApp(process.env.APP_ID);
 export const postUser = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user = await realm.emailPasswordAuth.registerUser({
+    await realm.emailPasswordAuth.registerUser({
       email,
       password,
     });
     console.log("Successfully created new user");
-    res.status(200).send(user);
+    res.status(200).send({ msg: "Successfully created new user" });
   } catch (err) {
     console.error(err.message);
     res.status(400).send({ msg: err.message });
