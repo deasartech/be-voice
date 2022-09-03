@@ -1,15 +1,16 @@
-const request = require("supertest");
-import { doesNotMatch } from "assert";
+import { agent as request } from "supertest";
 import { app } from "../../index";
 import {
   connectMongoose,
   disconnectMongoose,
 } from "../../services/database.service";
-import { ITopic, TopicSchema } from "../../models/topics.model";
+import { ITopic } from "../../models/topics.model";
 
 beforeAll(async () => await connectMongoose());
 
 afterAll(async () => await disconnectMongoose());
+
+// Topics Tests
 
 describe("Topics", () => {
   describe("GET /topics", () => {
