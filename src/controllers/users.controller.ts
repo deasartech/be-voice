@@ -1,67 +1,56 @@
 import { Request, Response } from "express";
 import Realm from "realm";
 import * as dotenv from "dotenv";
+import UserModel from "../models/users.model";
 
-dotenv.config();
+// Custom User Data
 
-const realm = Realm.App.getApp(process.env.APP_ID);
-
-// POST sign up new user
-export const postUser = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+// GET all users
+export const getUsers = async (req: Request, res: Response) => {
   try {
-    await realm.emailPasswordAuth.registerUser({
-      email,
-      password,
-    });
-    console.log("Successfully created new user");
-    res.status(200).send({ msg: "Successfully created new user" });
+    const users = await UserModel.find({});
+    console.log("Found users:", users);
+    res.status(200).send({ users });
   } catch (err) {
-    console.error(err.message);
-    res.status(400).send({ msg: err.message });
+    console.log(err);
+    res.status(400).send({ msg: "Bad Request" });
   }
 };
 
-// POST sign in user
-export const postLogin = async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+// GET user by username
+export const getUserByUsername = async (req: Request, res: Response) => {
+  const { username } = req.params;
+  console.log(req.params);
   try {
-    const credentials: Realm.Credentials = Realm.Credentials.emailPassword(
-      email,
-      password
+    const user = await UserModel.findOne({ username: username });
+    console.log("Found user:", user);
+    user !== null
+      ? res.status(200).send({ user })
+      : res.status(404).send({ msg: "User Not Found" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send({ msg: "Bad Request" });
+  }
+};
+
+// PATCH user username
+export const patchUserUsernameByUsername = async (
+  req: Request,
+  res: Response
+) => {
+  try {
+    const { username } = req.params;
+    const { newUsername } = req.body;
+    const response = await UserModel.updateOne(
+      { username: username },
+      {
+        username: newUsername,
+      }
     );
-    const user: Realm.User = await realm.logIn(credentials);
-    console.log(`Successfully signed in as user ${user.id}`);
-    console.log("user: ", user.profile);
-    res
-      .status(200)
-      .send({ msg: "Successfully signed in!", user: user.profile });
+    console.log("Successfully updated username");
+    res.status(200).send({ response });
   } catch (err) {
-    console.error(err.message);
-    res.status(401).send({ msg: "Error signing in!" });
-  }
-};
-
-// GET sign out current user
-export const getSignOutUser = async (req: Request, res: Response) => {
-  try {
-    await realm.currentUser.logOut();
-    console.log(`Successfully signed out user`);
-    res.status(200).send({ msg: "Successfully signed out" });
-  } catch (err) {
-    console.error(err.message);
-    res.status(401).send({ msg: "Error signing out!" });
-  }
-};
-
-// GET current user
-export const getCurrentUser = async (req: Request, res: Response) => {
-  try {
-    console.log(realm.currentUser.profile.email, "is currently signed in");
-    const user: Realm.User = realm.currentUser;
-    res.status(200).send({ user: user.profile, userId: user.id });
-  } catch (err) {
-    console.error(err.message);
-    res.status(401).send({ msg: err.message });
+    console.log(err.message);
+    res.status(400).send({ msg: "Bad Request" });
   }
 };
