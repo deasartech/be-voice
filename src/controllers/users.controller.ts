@@ -53,7 +53,7 @@ export const getUserByUsername = async (req: Request, res: Response) => {
 };
 
 // PATCH user username
-export const patchUserUserByUsername = async (req: Request, res: Response) => {
+export const patchUserByUsername = async (req: Request, res: Response) => {
   try {
     const { user } = req.params;
     const {
