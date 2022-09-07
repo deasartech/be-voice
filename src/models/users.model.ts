@@ -21,28 +21,30 @@ export interface IUser extends Document {
   following: string[];
   protected: boolean;
   verified: boolean;
+  __v?: number;
 }
 
-const UserSchema: Schema = new Schema({
-  uid: { type: String },
+export const UserSchema: Schema = new Schema({
+  uid: { type: String, default: null },
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   created_at: { type: String },
-  description: { type: String },
-  url: { type: String },
+  description: { type: String, default: null },
+  url: { type: String, default: null },
   subscribers_count: { type: Number },
   friends_count: { type: Number },
   notes_count: { type: Number },
   favorites_count: { type: Number },
   replies_count: { type: Number },
-  time_zone: { type: String },
-  location: { type: String },
+  time_zone: { type: String, default: null },
+  location: { type: String, default: null },
   lang: { type: String },
-  profile_photo_image_url: { type: String },
-  profile_color: { type: String },
+  profile_photo_image_url: { type: String, default: null },
+  profile_color: { type: String, default: null },
   following: { type: Array },
   protected: { type: Boolean },
   verified: { type: Boolean },
+  __v: { type: Number, required: false },
 });
 
 const UserModel = mongoose.model<IUser>("User", UserSchema);

@@ -12,4 +12,4 @@ usersRouter.use(express.json());
 // GET
 usersRouter.route("/").get(getUsers);
 usersRouter.route("/:username").get(getUserByUsername);
-usersRouter.route("/:username").patch(patchUserUsernameByUsername);
+usersRouter.route("/:user").patch(patchUserUsernameByUsername);

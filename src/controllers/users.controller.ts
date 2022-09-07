@@ -4,6 +4,25 @@ import * as dotenv from "dotenv";
 import UserModel from "../models/users.model";
 
 // Custom User Data
+interface IUserUpdate {
+  email?: string;
+  username?: string;
+  description?: string;
+  url?: string;
+  subscribers_count?: number;
+  friends_count?: number;
+  notes_count?: number;
+  favorites_count?: number;
+  replies_count?: number;
+  time_zone?: string;
+  location?: string;
+  lang?: string;
+  profile_photo_image_url?: string;
+  profile_color?: string;
+  following?: string[];
+  protected?: boolean;
+  verified?: boolean;
+}
 
 // GET all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -39,14 +58,54 @@ export const patchUserUsernameByUsername = async (
   res: Response
 ) => {
   try {
-    const { username } = req.params;
-    const { newUsername } = req.body;
-    const response = await UserModel.updateOne(
-      { username: username },
-      {
-        username: newUsername,
-      }
-    );
+    const { user } = req.params;
+    const {
+      email,
+      username,
+      description,
+      url,
+      timeZone,
+      location,
+      lang,
+      profilePhoto,
+      profileColor,
+      isProtected,
+    } = req.body;
+    // create updates object and build if value not null
+    const updates: IUserUpdate = {};
+    if (email) {
+      updates.email = email;
+    }
+    if (username) {
+      updates.username = username;
+    }
+    if (description) {
+      updates.description = description;
+    }
+    if (url) {
+      updates.url = url;
+    }
+    if (timeZone) {
+      updates.time_zone = timeZone;
+    }
+    if (location) {
+      updates.location = location;
+    }
+    if (lang) {
+      updates.lang = lang;
+    }
+    if (profilePhoto) {
+      updates.profile_photo_image_url = profilePhoto;
+    }
+    if (profileColor) {
+      updates.profile_color = profileColor;
+    }
+    if (isProtected) {
+      updates.protected = isProtected;
+    }
+
+    console.log(updates, "updates");
+    const response = await UserModel.updateOne({ username: user }, updates);
     console.log("Successfully updated username");
     res.status(200).send({ response });
   } catch (err) {
