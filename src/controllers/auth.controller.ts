@@ -16,11 +16,16 @@ export const postUser = async (req: Request, res: Response) => {
       uid: null,
       email: email,
       username: username,
+      details: {
+        first_name: null,
+        last_name: null,
+        date_of_birth: null,
+        phone_number: null,
+      },
       created_at: Date(),
       description: null,
       url: null,
       subscribers_count: 0,
-      friends_count: 0,
       notes_count: 0,
       favorites_count: 0,
       replies_count: 0,
@@ -29,9 +34,11 @@ export const postUser = async (req: Request, res: Response) => {
       lang: "en",
       profile_photo_image_url: null,
       profile_color: null,
-      following: [],
+      subscriptions: [],
+      interests: [],
       protected: false,
       verified: false,
+      is_replier: false,
     });
     const newUser = await user.save();
     console.log("new user Document created for", newUser);

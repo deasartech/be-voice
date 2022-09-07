@@ -78,10 +78,13 @@ describe("Users", () => {
             expect(user).toHaveProperty("uid");
             expect(user).toHaveProperty("email");
             expect(user).toHaveProperty("username");
+            expect(user.details).toHaveProperty("first_name");
+            expect(user.details).toHaveProperty("last_name");
+            expect(user.details).toHaveProperty("date_of_birth");
+            expect(user.details).toHaveProperty("phone_number");
             expect(user).toHaveProperty("created_at");
             expect(user).toHaveProperty("description");
             expect(user).toHaveProperty("subscribers_count");
-            expect(user).toHaveProperty("friends_count");
             expect(user).toHaveProperty("notes_count");
             expect(user).toHaveProperty("favorites_count");
             expect(user).toHaveProperty("replies_count");
@@ -90,7 +93,7 @@ describe("Users", () => {
             expect(user).toHaveProperty("lang");
             expect(user).toHaveProperty("profile_photo_image_url");
             expect(user).toHaveProperty("profile_color");
-            expect(user).toHaveProperty("following");
+            expect(user).toHaveProperty("subscriptions");
             expect(user).toHaveProperty("protected");
             expect(user).toHaveProperty("verified");
             expect(user._id).toEqual(expect.any(String));
@@ -98,12 +101,11 @@ describe("Users", () => {
             expect(user.username).toEqual(expect.any(String));
             expect(user.created_at).toEqual(expect.any(String));
             expect(user.subscribers_count).toEqual(expect.any(Number));
-            expect(user.friends_count).toEqual(expect.any(Number));
             expect(user.notes_count).toEqual(expect.any(Number));
             expect(user.favorites_count).toEqual(expect.any(Number));
             expect(user.replies_count).toEqual(expect.any(Number));
             expect(user.lang).toEqual(expect.any(String));
-            expect(user.following).toEqual(expect.any(Array));
+            expect(user.subscriptions).toEqual(expect.any(Array));
             expect(user.protected).toEqual(expect.any(Boolean));
             expect(user.verified).toEqual(expect.any(Boolean));
           });
@@ -123,7 +125,7 @@ describe("Users", () => {
 
     test("should return a user if ':username' is valid ", () => {
       return request(app)
-        .get("/api/users/updated")
+        .get("/api/users/one")
         .expect(200)
         .then(({ body }: any) => {
           const { user } = body;
@@ -136,7 +138,6 @@ describe("Users", () => {
           expect(user).toHaveProperty("created_at");
           expect(user).toHaveProperty("description");
           expect(user).toHaveProperty("subscribers_count");
-          expect(user).toHaveProperty("friends_count");
           expect(user).toHaveProperty("notes_count");
           expect(user).toHaveProperty("favorites_count");
           expect(user).toHaveProperty("replies_count");
@@ -145,7 +146,7 @@ describe("Users", () => {
           expect(user).toHaveProperty("lang");
           expect(user).toHaveProperty("profile_photo_image_url");
           expect(user).toHaveProperty("profile_color");
-          expect(user).toHaveProperty("following");
+          expect(user).toHaveProperty("subscriptions");
           expect(user).toHaveProperty("protected");
           expect(user).toHaveProperty("verified");
         });
@@ -158,7 +159,7 @@ describe("Users", () => {
         username: "newname",
       };
       return request(app)
-        .patch("/api/users/lol")
+        .patch("/api/users/one")
         .send(nameChange)
         .expect(200)
         .then(({ body }: any) => {
@@ -178,7 +179,7 @@ describe("Users", () => {
         location: "Bay Area, CA",
       };
       return request(app)
-        .patch("/api/users/two")
+        .patch("/api/users/test")
         .send(update)
         .expect(200)
         .then(({ body }: any) => {
