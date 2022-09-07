@@ -12,7 +12,27 @@ export const postUser = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
   try {
     // user custom
-    const user = new UserModel({ username: username, email: email });
+    const user = new UserModel({
+      uid: null,
+      email: email,
+      username: username,
+      created_at: Date(),
+      description: null,
+      url: null,
+      subscribers_count: 0,
+      friends_count: 0,
+      notes_count: 0,
+      favorites_count: 0,
+      replies_count: 0,
+      time_zone: null,
+      location: null,
+      lang: "en",
+      profile_photo_image_url: null,
+      profile_color: null,
+      following: [],
+      protected: false,
+      verified: false,
+    });
     const newUser = await user.save();
     console.log("new user Document created for", newUser);
     // auth user
