@@ -106,7 +106,7 @@ export const patchUserUsernameByUsername = async (
 
     console.log(updates, "updates");
     const response = await UserModel.updateOne({ username: user }, updates);
-    console.log("Successfully updated username");
+    console.log("Successfully updated user");
     res.status(200).send({ response });
   } catch (err) {
     console.log(err.message);
