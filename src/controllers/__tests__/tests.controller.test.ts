@@ -1,11 +1,12 @@
 import { agent as request } from "supertest";
+import { faker } from "@faker-js/faker";
 import { app } from "../../index";
 import {
   connectMongoose,
   disconnectMongoose,
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
-import { IUser, UserSchema } from "../../models/users.model";
+import { IUser } from "../../models/users.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -153,13 +154,13 @@ describe("Users", () => {
     });
   });
 
-  describe("PATCH /users/:username", () => {
+  describe("PATCH /users/:uid", () => {
     test("should return response object if succesfully updates username ", () => {
       const nameChange = {
-        username: "newname",
+        username: faker.internet.userName(),
       };
       return request(app)
-        .patch("/api/users/one")
+        .patch("/api/users/631917b8cb1c9f12723ad568")
         .send(nameChange)
         .expect(200)
         .then(({ body }: any) => {
@@ -174,12 +175,14 @@ describe("Users", () => {
 
     test("should return matchedCount 1, modifiedCount 1 if succesfully updates description, url, location ", () => {
       const update = {
-        description: "Hello World, glad to finally be here",
-        url: "newtesting.url.io",
-        location: "Bay Area, CA",
+        description: faker.lorem.lines(),
+        url: faker.internet.domainName(),
+        location: faker.address.cityName(),
+        profilePhoto: faker.internet.avatar(),
+        profileColor: faker.color.rgb(),
       };
       return request(app)
-        .patch("/api/users/test")
+        .patch("/api/users/631917b8cb1c9f12723ad568")
         .send(update)
         .expect(200)
         .then(({ body }: any) => {
@@ -193,3 +196,27 @@ describe("Users", () => {
     });
   });
 });
+
+// describe("PATCH /users/:uid/details", () => {
+//   test("should return response object if succesfully updates user details", () => {
+//     const update = {
+//       first_name: faker.name.firstName(),
+//       last_name: faker.name.lastName(),
+//       date_of_birth: faker.date.birthdate().toString(),
+//       phone_number: faker.phone.number(),
+//     };
+//     console.log(update, "update details");
+//     return request(app)
+//       .patch("/api/users/631917b8cb1c9f12723ad568/details")
+//       .send(update)
+//       .expect(200)
+//       .then(({ body }: any) => {
+//         const { response } = body;
+//         console.log(response);
+//         expect(response).toBeInstanceOf(Object);
+//         expect(response.acknowledged).toBe(true);
+//         expect(response.modifiedCount).toEqual(expect.any(Number));
+//         expect(response).toHaveProperty("matchedCount");
+//       });
+//   });
+// });

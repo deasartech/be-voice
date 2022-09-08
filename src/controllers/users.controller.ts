@@ -1,28 +1,9 @@
 import { Request, Response } from "express";
 import Realm from "realm";
 import * as dotenv from "dotenv";
-import UserModel from "../models/users.model";
+import UserModel, { IUserUpdate } from "../models/users.model";
 
 // Custom User Data
-interface IUserUpdate {
-  email?: string;
-  username?: string;
-  description?: string;
-  url?: string;
-  subscribers_count?: number;
-  friends_count?: number;
-  notes_count?: number;
-  favorites_count?: number;
-  replies_count?: number;
-  time_zone?: string;
-  location?: string;
-  lang?: string;
-  profile_photo_image_url?: string;
-  profile_color?: string;
-  following?: string[];
-  protected?: boolean;
-  verified?: boolean;
-}
 
 // GET all users
 export const getUsers = async (req: Request, res: Response) => {
@@ -52,10 +33,10 @@ export const getUserByUsername = async (req: Request, res: Response) => {
   }
 };
 
-// PATCH user username
-export const patchUserByUsername = async (req: Request, res: Response) => {
+// PATCH user by uid
+export const patchUserByUID = async (req: Request, res: Response) => {
   try {
-    const { user } = req.params;
+    const { uid } = req.params;
     const {
       email,
       username,
@@ -102,11 +83,34 @@ export const patchUserByUsername = async (req: Request, res: Response) => {
     }
 
     console.log(updates, "updates");
-    const response = await UserModel.updateOne({ username: user }, updates);
+    const response = await UserModel.updateOne({ uid: uid }, updates);
     console.log("Successfully updated user");
     res.status(200).send({ response });
   } catch (err) {
     console.log(err.message);
-    res.status(400).send({ msg: "Bad Request" });
+    res.status(400).send({ msg: err.message });
+  }
+};
+
+// PATCH user details by uid
+export const patchUserDetailsByUID = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.params;
+    const { first_name, last_name, date_of_birth, phone_number } = req.body;
+    const update = {
+      first_name: first_name,
+      last_name: last_name,
+      date_of_birth: date_of_birth,
+      phone_number: phone_number,
+    };
+    const response = await UserModel.updateOne(
+      { uid: uid },
+      { details: update }
+    );
+    console.log("Successfully updated user");
+    res.status(200).send({ response });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send({ msg: err.message });
   }
 };
