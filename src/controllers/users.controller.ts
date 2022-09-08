@@ -1,7 +1,10 @@
 import { Request, Response } from "express";
 import Realm from "realm";
 import * as dotenv from "dotenv";
-import UserModel, { IUserUpdate } from "../models/users.model";
+import UserModel, {
+  IUserUpdate,
+  IUserDetailsUpdate,
+} from "../models/users.model";
 
 // Custom User Data
 
@@ -97,7 +100,7 @@ export const patchUserDetailsByUID = async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
     const { first_name, last_name, date_of_birth, phone_number } = req.body;
-    const update = {
+    const update: IUserDetailsUpdate = {
       first_name: first_name,
       last_name: last_name,
       date_of_birth: date_of_birth,
@@ -109,6 +112,35 @@ export const patchUserDetailsByUID = async (req: Request, res: Response) => {
     );
     console.log("Successfully updated user");
     res.status(200).send({ response });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send({ msg: err.message });
+  }
+};
+
+// PATCH user is replier (must have details completed)
+export const patchUserReplierByUID = async (req: Request, res: Response) => {
+  const { uid } = req.params;
+  const { isReplier } = req.body;
+  try {
+    const user = await UserModel.findOne({ uid: uid });
+    console.log(user, "user");
+    if (
+      user.details.first_name &&
+      user.details.last_name &&
+      user.details.date_of_birth &&
+      user.details.phone_number
+    ) {
+      const response = await UserModel.updateOne(
+        { uid: uid },
+        { is_replier: isReplier }
+      );
+      res.status(200).send({ response });
+    } else {
+      res
+        .status(401)
+        .send({ msg: "Error Not Authorized: Details not complete" });
+    }
   } catch (err) {
     console.log(err.message);
     res.status(400).send({ msg: err.message });

@@ -195,28 +195,57 @@ describe("Users", () => {
         });
     });
   });
-});
 
-// describe("PATCH /users/:uid/details", () => {
-//   test("should return response object if succesfully updates user details", () => {
-//     const update = {
-//       first_name: faker.name.firstName(),
-//       last_name: faker.name.lastName(),
-//       date_of_birth: faker.date.birthdate().toString(),
-//       phone_number: faker.phone.number(),
-//     };
-//     console.log(update, "update details");
-//     return request(app)
-//       .patch("/api/users/631917b8cb1c9f12723ad568/details")
-//       .send(update)
-//       .expect(200)
-//       .then(({ body }: any) => {
-//         const { response } = body;
-//         console.log(response);
-//         expect(response).toBeInstanceOf(Object);
-//         expect(response.acknowledged).toBe(true);
-//         expect(response.modifiedCount).toEqual(expect.any(Number));
-//         expect(response).toHaveProperty("matchedCount");
-//       });
-//   });
-// });
+  describe("PATCH /users/:uid/details", () => {
+    test("should return response object if succesfully updates user details", () => {
+      const update = {
+        first_name: faker.name.firstName(),
+        last_name: faker.name.lastName(),
+        date_of_birth: faker.date.birthdate(),
+        phone_number: faker.phone.number(),
+      };
+      console.log(update, "update details");
+      return request(app)
+        .patch("/api/users/631917b8cb1c9f12723ad568/details")
+        .send(update)
+        .expect(200)
+        .then(({ body }: any) => {
+          const { response } = body;
+          expect(response).toBeInstanceOf(Object);
+          expect(response.acknowledged).toBe(true);
+          expect(response.modifiedCount).toEqual(expect.any(Number));
+          expect(response).toHaveProperty("matchedCount");
+        });
+    });
+  });
+
+  describe("PATCH /users/:uid/permissions", () => {
+    test("should return error message when user details not complete", () => {
+      const update = { isReplier: "true" };
+      return request(app)
+        .patch("/api/users/631917ab832ed938a5517cdb/permissions")
+        .send(update)
+        .expect(401)
+        .then(({ body }: any) => {
+          const { msg } = body;
+          expect(msg).toBe("Error Not Authorized: Details not complete");
+        });
+    });
+
+    test("should return response object when user details are complete", () => {
+      const update = { isReplier: "true" };
+      return request(app)
+        .patch("/api/users/631917b8cb1c9f12723ad568/permissions")
+        .send(update)
+        .expect(200)
+        .then(({ body }: any) => {
+          const { response } = body;
+          console.log(response, "<<< response");
+          expect(response).toBeInstanceOf(Object);
+          expect(response.acknowledged).toBe(true);
+          expect(response.modifiedCount).toEqual(expect.any(Number));
+          expect(response).toHaveProperty("matchedCount");
+        });
+    });
+  });
+});

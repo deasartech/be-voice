@@ -8,8 +8,8 @@ export interface IUser extends Document {
   details: {
     first_name: string;
     last_name: string;
-    date_of_birth: number;
-    phone_number: number;
+    date_of_birth: string;
+    phone_number: string;
   };
   created_at: string;
   description: string;
@@ -52,12 +52,20 @@ export interface IUserUpdate {
   verified?: boolean;
 }
 
+// user details update interface
+export interface IUserDetailsUpdate {
+  first_name: string;
+  last_name: string;
+  date_of_birth: string;
+  phone_number: string;
+}
+
 // details schema
 const DetailsSchema: Schema = new Schema({
   first_name: { type: String },
   last_name: { type: String },
-  date_of_birth: { type: Number },
-  phone_number: { type: Number, unique: true },
+  date_of_birth: { type: String },
+  phone_number: { type: String, unique: true },
 });
 
 // UserSchema for model
