@@ -1,11 +1,12 @@
 import { agent as request } from "supertest";
+import { faker } from "@faker-js/faker";
 import { app } from "../../index";
 import {
   connectMongoose,
   disconnectMongoose,
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
-import { IUser, UserSchema } from "../../models/users.model";
+import { IUser } from "../../models/users.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -78,10 +79,13 @@ describe("Users", () => {
             expect(user).toHaveProperty("uid");
             expect(user).toHaveProperty("email");
             expect(user).toHaveProperty("username");
+            expect(user.details).toHaveProperty("first_name");
+            expect(user.details).toHaveProperty("last_name");
+            expect(user.details).toHaveProperty("date_of_birth");
+            expect(user.details).toHaveProperty("phone_number");
             expect(user).toHaveProperty("created_at");
             expect(user).toHaveProperty("description");
             expect(user).toHaveProperty("subscribers_count");
-            expect(user).toHaveProperty("friends_count");
             expect(user).toHaveProperty("notes_count");
             expect(user).toHaveProperty("favorites_count");
             expect(user).toHaveProperty("replies_count");
@@ -90,7 +94,7 @@ describe("Users", () => {
             expect(user).toHaveProperty("lang");
             expect(user).toHaveProperty("profile_photo_image_url");
             expect(user).toHaveProperty("profile_color");
-            expect(user).toHaveProperty("following");
+            expect(user).toHaveProperty("subscriptions");
             expect(user).toHaveProperty("protected");
             expect(user).toHaveProperty("verified");
             expect(user._id).toEqual(expect.any(String));
@@ -98,12 +102,11 @@ describe("Users", () => {
             expect(user.username).toEqual(expect.any(String));
             expect(user.created_at).toEqual(expect.any(String));
             expect(user.subscribers_count).toEqual(expect.any(Number));
-            expect(user.friends_count).toEqual(expect.any(Number));
             expect(user.notes_count).toEqual(expect.any(Number));
             expect(user.favorites_count).toEqual(expect.any(Number));
             expect(user.replies_count).toEqual(expect.any(Number));
             expect(user.lang).toEqual(expect.any(String));
-            expect(user.following).toEqual(expect.any(Array));
+            expect(user.subscriptions).toEqual(expect.any(Array));
             expect(user.protected).toEqual(expect.any(Boolean));
             expect(user.verified).toEqual(expect.any(Boolean));
           });
@@ -123,7 +126,7 @@ describe("Users", () => {
 
     test("should return a user if ':username' is valid ", () => {
       return request(app)
-        .get("/api/users/updated")
+        .get("/api/users/one")
         .expect(200)
         .then(({ body }: any) => {
           const { user } = body;
@@ -136,7 +139,6 @@ describe("Users", () => {
           expect(user).toHaveProperty("created_at");
           expect(user).toHaveProperty("description");
           expect(user).toHaveProperty("subscribers_count");
-          expect(user).toHaveProperty("friends_count");
           expect(user).toHaveProperty("notes_count");
           expect(user).toHaveProperty("favorites_count");
           expect(user).toHaveProperty("replies_count");
@@ -145,20 +147,20 @@ describe("Users", () => {
           expect(user).toHaveProperty("lang");
           expect(user).toHaveProperty("profile_photo_image_url");
           expect(user).toHaveProperty("profile_color");
-          expect(user).toHaveProperty("following");
+          expect(user).toHaveProperty("subscriptions");
           expect(user).toHaveProperty("protected");
           expect(user).toHaveProperty("verified");
         });
     });
   });
 
-  describe("PATCH /users/:username", () => {
+  describe("PATCH /users/:uid", () => {
     test("should return response object if succesfully updates username ", () => {
       const nameChange = {
-        username: "newname",
+        username: faker.internet.userName(),
       };
       return request(app)
-        .patch("/api/users/lol")
+        .patch("/api/users/631917b8cb1c9f12723ad568")
         .send(nameChange)
         .expect(200)
         .then(({ body }: any) => {
@@ -173,12 +175,14 @@ describe("Users", () => {
 
     test("should return matchedCount 1, modifiedCount 1 if succesfully updates description, url, location ", () => {
       const update = {
-        description: "Hello World, glad to finally be here",
-        url: "newtesting.url.io",
-        location: "Bay Area, CA",
+        description: faker.lorem.lines(),
+        url: faker.internet.domainName(),
+        location: faker.address.cityName(),
+        profilePhoto: faker.internet.avatar(),
+        profileColor: faker.color.rgb(),
       };
       return request(app)
-        .patch("/api/users/two")
+        .patch("/api/users/631917b8cb1c9f12723ad568")
         .send(update)
         .expect(200)
         .then(({ body }: any) => {
@@ -188,6 +192,59 @@ describe("Users", () => {
           expect(response.acknowledged).toBe(true);
           expect(response.modifiedCount).toBe(1);
           expect(response.matchedCount).toBe(1);
+        });
+    });
+  });
+
+  describe("PATCH /users/:uid/details", () => {
+    test("should return response object if succesfully updates user details", () => {
+      const update = {
+        first_name: faker.name.firstName(),
+        last_name: faker.name.lastName(),
+        date_of_birth: faker.date.birthdate(),
+        phone_number: faker.phone.number(),
+      };
+      console.log(update, "update details");
+      return request(app)
+        .patch("/api/users/631917b8cb1c9f12723ad568/details")
+        .send(update)
+        .expect(200)
+        .then(({ body }: any) => {
+          const { response } = body;
+          expect(response).toBeInstanceOf(Object);
+          expect(response.acknowledged).toBe(true);
+          expect(response.modifiedCount).toEqual(expect.any(Number));
+          expect(response).toHaveProperty("matchedCount");
+        });
+    });
+  });
+
+  describe("PATCH /users/:uid/permissions", () => {
+    test("should return error message when user details not complete", () => {
+      const update = { isReplier: "true" };
+      return request(app)
+        .patch("/api/users/631917ab832ed938a5517cdb/permissions")
+        .send(update)
+        .expect(401)
+        .then(({ body }: any) => {
+          const { msg } = body;
+          expect(msg).toBe("Error Not Authorized: Details not complete");
+        });
+    });
+
+    test("should return response object when user details are complete", () => {
+      const update = { isReplier: "true" };
+      return request(app)
+        .patch("/api/users/631917b8cb1c9f12723ad568/permissions")
+        .send(update)
+        .expect(200)
+        .then(({ body }: any) => {
+          const { response } = body;
+          console.log(response, "<<< response");
+          expect(response).toBeInstanceOf(Object);
+          expect(response.acknowledged).toBe(true);
+          expect(response.modifiedCount).toEqual(expect.any(Number));
+          expect(response).toHaveProperty("matchedCount");
         });
     });
   });
