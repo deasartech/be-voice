@@ -32,8 +32,6 @@ export const postNote = async (req: Request, res: Response) => {
       uid: uid,
       username: username,
     });
-    console.log(checkTopicExists, "topic exists");
-    console.log(checkUserExists, "user exists");
     if (checkUserExists !== null && checkTopicExists !== null) {
       // create updates object and build if value not null
       const user: NoteUser = {
@@ -56,8 +54,9 @@ export const postNote = async (req: Request, res: Response) => {
       // Post using Note Model
       const note = new NoteModel(updates);
       const newNote = await note.save();
-      console.log("New Note Successfully Added", newNote);
-      res.status(200).send({ msg: "Successfully Added New Note" });
+      res
+        .status(200)
+        .send({ res: newNote, msg: "Successfully Added New Note" });
     } else if (checkUserExists === null) {
       res.status(401).send({ msg: "Cannot Post Note: User Does Not Exist" });
     } else if (checkTopicExists === null) {
@@ -66,5 +65,17 @@ export const postNote = async (req: Request, res: Response) => {
   } catch (err) {
     console.log(err.message);
     res.status(400).send({ msg: err.message });
+  }
+};
+
+// DEL Note
+export const removeNoteByID = async (req: Request, res: Response) => {
+  const { note_id } = req.params;
+  try {
+    const removed = await NoteModel.deleteOne({ _id: note_id });
+    res.status(200).send({ res: removed, msg: "Successfully Deleted Note" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send({ msg: "Error Note Not Found" });
   }
 };
