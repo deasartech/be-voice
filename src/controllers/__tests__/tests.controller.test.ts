@@ -7,6 +7,7 @@ import {
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
 import { IUser } from "../../models/users.model";
+import { INote, INoteUpdatePost, NoteUser } from "../../models/notes.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -14,7 +15,7 @@ afterAll(async () => await disconnectMongoose());
 
 // Topics Tests
 
-describe("Topics", () => {
+describe("__Topics__", () => {
   describe("GET /topics", () => {
     test("should return all topics", () => {
       return request(app)
@@ -65,7 +66,7 @@ describe("Topics", () => {
 
 // Users Tests
 
-describe("Users", () => {
+describe("__Users__", () => {
   describe("GET /users", () => {
     test("should return all users", () => {
       return request(app)
@@ -245,6 +246,96 @@ describe("Users", () => {
           expect(response.acknowledged).toBe(true);
           expect(response.modifiedCount).toEqual(expect.any(Number));
           expect(response).toHaveProperty("matchedCount");
+        });
+    });
+  });
+});
+
+// Notes Tests
+describe("__Notes__", () => {
+  describe("GET Notes", () => {
+    test("should return 200", () => {
+      return request(app).get("/api/notes").expect(200);
+    });
+
+    test("should return 200 all notes and check properties", () => {
+      return request(app)
+        .get("/api/notes")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          expect(notes).toBeInstanceOf(Array);
+          notes.forEach((note: INote) => {
+            expect(note._id).toEqual(expect.any(String));
+            expect(note.created_at).toEqual(expect.any(String));
+            expect(note.description).toEqual(expect.any(String));
+            expect(note.voice_note_url_string).toEqual(expect.any(String));
+            expect(note.img_url_str).toEqual(expect.any(String));
+            expect(note.user.uid).toEqual(expect.any(String));
+            expect(note.user.username).toEqual(expect.any(String));
+            expect(note.comments_count).toEqual(expect.any(Number));
+            expect(note.cheers_count).toEqual(expect.any(Number));
+            expect(note.topic).toEqual(expect.any(String));
+          });
+        });
+    });
+  });
+
+  describe("POST Note", () => {
+    test("should should repsond with 401 user uid not found", () => {
+      const note = {
+        username: "one",
+        uid: "10293809233",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "news",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(401)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Cannot Post Note: User Does Not Exist");
+        });
+    });
+
+    test("should should repsond with 401 user uid okay but topic not found", () => {
+      const note = {
+        username: "one",
+        uid: "631917ab832ed938a5517cdb",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "noneexistent",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(401)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Cannot Post Note: Topic Does Not Exist");
+        });
+    });
+
+    test("should should repsond with 200", () => {
+      const note = {
+        username: "one",
+        uid: "631917ab832ed938a5517cdb",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "business",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(200)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Successfully Added New Note");
         });
     });
   });

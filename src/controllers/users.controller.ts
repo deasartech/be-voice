@@ -1,6 +1,4 @@
 import { Request, Response } from "express";
-import Realm from "realm";
-import * as dotenv from "dotenv";
 import UserModel, {
   IUserUpdate,
   IUserDetailsUpdate,
