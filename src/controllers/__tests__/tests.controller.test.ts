@@ -252,7 +252,10 @@ describe("__Users__", () => {
 });
 
 // Notes Tests
+
 describe("__Notes__", () => {
+  let TEMP_DEL_ID = "";
+
   describe("GET Notes", () => {
     test("should return 200", () => {
       return request(app).get("/api/notes").expect(200);
@@ -282,7 +285,7 @@ describe("__Notes__", () => {
   });
 
   describe("POST Note", () => {
-    test("should should repsond with 401 user uid not found", () => {
+    test("should should respond with 401 user uid not found", () => {
       const note = {
         username: "one",
         uid: "10293809233",
@@ -301,7 +304,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test("should should repsond with 401 user uid okay but topic not found", () => {
+    test("should should respond with 401 user uid okay but topic not found", () => {
       const note = {
         username: "one",
         uid: "631917ab832ed938a5517cdb",
@@ -320,7 +323,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test("should should repsond with 200", () => {
+    test("should should respond with 200", () => {
       const note = {
         username: "one",
         uid: "631917ab832ed938a5517cdb",
@@ -335,7 +338,27 @@ describe("__Notes__", () => {
         .send(note)
         .expect(200)
         .then(({ body }: any) => {
-          expect(body.msg).toBe("Successfully Added New Note");
+          const { res, msg } = body;
+          TEMP_DEL_ID = res._id;
+          expect(msg).toBe("Successfully Added New Note");
+        });
+    });
+  });
+
+  describe("DEL Note", () => {
+    test("should respond status 400 if note id does not exist", () => {
+      return request(app).delete("/api/notes/555555").expect(400);
+    });
+
+    test("should respond status 200 if removed", () => {
+      return request(app)
+        .delete(`/api/notes/${TEMP_DEL_ID}`)
+        .expect(200)
+        .then(({ body }) => {
+          const { res, msg } = body;
+          expect(res.acknowledged).toBe(true);
+          expect(res.deletedCount).toBe(1);
+          expect(msg).toBe("Successfully Deleted Note");
         });
     });
   });
