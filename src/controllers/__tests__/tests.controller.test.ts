@@ -7,7 +7,7 @@ import {
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
 import { IUser } from "../../models/users.model";
-import { INoteUpdatePost, NoteUser } from "../../models/notes.model";
+import { INote, INoteUpdatePost, NoteUser } from "../../models/notes.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -253,6 +253,34 @@ describe("__Users__", () => {
 
 // Notes Tests
 describe.only("__Notes__", () => {
+  describe("GET Notes", () => {
+    test("should return 200", () => {
+      return request(app).get("/api/notes").expect(200);
+    });
+
+    test("should return 200 all notes and check properties", () => {
+      return request(app)
+        .get("/api/notes")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          expect(notes).toBeInstanceOf(Array);
+          notes.forEach((note: INote) => {
+            expect(note._id).toEqual(expect.any(String));
+            expect(note.created_at).toEqual(expect.any(String));
+            expect(note.description).toEqual(expect.any(String));
+            expect(note.voice_note_url_string).toEqual(expect.any(String));
+            expect(note.img_url_str).toEqual(expect.any(String));
+            expect(note.user.uid).toEqual(expect.any(String));
+            expect(note.user.username).toEqual(expect.any(String));
+            expect(note.comments_count).toEqual(expect.any(Number));
+            expect(note.cheers_count).toEqual(expect.any(Number));
+            expect(note.topic).toEqual(expect.any(String));
+          });
+        });
+    });
+  });
+
   describe("POST Note", () => {
     test("should should repsond with 401 user uid not found", () => {
       const note = {
