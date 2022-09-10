@@ -252,7 +252,7 @@ describe("__Users__", () => {
 });
 
 // Notes Tests
-describe.only("__Notes__", () => {
+describe("__Notes__", () => {
   describe("GET Notes", () => {
     test("should return 200", () => {
       return request(app).get("/api/notes").expect(200);
