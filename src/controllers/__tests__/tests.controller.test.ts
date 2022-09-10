@@ -346,7 +346,7 @@ describe("__Notes__", () => {
   });
 
   describe("DEL Note", () => {
-    test("should respond status 401 if note id does not exist", () => {
+    test("should respond status 400 if note id does not exist", () => {
       return request(app).delete("/api/notes/555555").expect(400);
     });
 
