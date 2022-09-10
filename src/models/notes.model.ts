@@ -30,6 +30,7 @@ export interface INote extends Document {
   user_mentions: string[];
 }
 
+// For Controller Use
 export interface INoteUpdate {
   created_at: string;
   title: string;
@@ -39,6 +40,16 @@ export interface INoteUpdate {
   user: NoteUser;
   comments_count: number;
   cheers_count: number;
+  topic: string;
+}
+
+// For Testing POST request
+export interface INoteUpdatePost {
+  title: string;
+  description: string;
+  voice_note_url_string: string;
+  img_url_str: string;
+  user: NoteUser;
   topic: string;
 }
 

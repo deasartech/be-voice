@@ -7,6 +7,7 @@ import {
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
 import { IUser } from "../../models/users.model";
+import { INoteUpdatePost, NoteUser } from "../../models/notes.model";
 
 beforeAll(async () => await connectMongoose());
 
@@ -14,7 +15,7 @@ afterAll(async () => await disconnectMongoose());
 
 // Topics Tests
 
-describe("Topics", () => {
+describe("__Topics__", () => {
   describe("GET /topics", () => {
     test("should return all topics", () => {
       return request(app)
@@ -65,7 +66,7 @@ describe("Topics", () => {
 
 // Users Tests
 
-describe("Users", () => {
+describe("__Users__", () => {
   describe("GET /users", () => {
     test("should return all users", () => {
       return request(app)
@@ -251,3 +252,63 @@ describe("Users", () => {
 });
 
 // Notes Tests
+describe.only("__Notes__", () => {
+  describe("POST Note", () => {
+    test("should should repsond with 401 user uid not found", () => {
+      const note = {
+        username: "one",
+        uid: "10293809233",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "news",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(401)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Cannot Post Note: User Does Not Exist");
+        });
+    });
+
+    test("should should repsond with 401 user uid okay but topic not found", () => {
+      const note = {
+        username: "one",
+        uid: "631917ab832ed938a5517cdb",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "noneexistent",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(401)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Cannot Post Note: Topic Does Not Exist");
+        });
+    });
+
+    test("should should repsond with 200", () => {
+      const note = {
+        username: "one",
+        uid: "631917ab832ed938a5517cdb",
+        title: "Todays News",
+        description: "Everything going on today",
+        voice_note_url_string: "randomurl.url.com",
+        img_url_str: "random_img_url.com",
+        topic: "business",
+      };
+      return request(app)
+        .post("/api/notes/post")
+        .send(note)
+        .expect(200)
+        .then(({ body }: any) => {
+          expect(body.msg).toBe("Successfully Added New Note");
+        });
+    });
+  });
+});
