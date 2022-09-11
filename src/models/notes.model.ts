@@ -43,6 +43,14 @@ export interface INoteUpdate {
   topic: string;
 }
 
+// For PATCH cheers and comments
+export interface INoteUpdatePatch {
+  title?: string;
+  description?: string;
+  comments_count?: number;
+  cheers_count?: number;
+}
+
 // For Testing POST request
 export interface INoteUpdatePost {
   title: string;
@@ -55,6 +63,7 @@ export interface INoteUpdatePost {
 
 // Note Schema
 export const NoteSchema: Schema = new Schema({
+  // _id: { type: Schema.Types.ObjectId, required: false },
   created_at: { type: String },
   title: { type: String, required: true },
   description: { type: String, required: true },

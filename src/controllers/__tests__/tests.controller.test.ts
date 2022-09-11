@@ -345,6 +345,63 @@ describe("__Notes__", () => {
     });
   });
 
+  describe.only("PATCH Note", () => {
+    test("should respond with 400 if id is not valid", () => {
+      const update = {
+        title: "new title",
+        description: "new description",
+      };
+      return request(app)
+        .patch("/api/notes/631d0061b8396ab9e006f909")
+        .send(update)
+        .expect(400);
+    });
+
+    test("should respond with 400 if body contains title, desc, cheers and comments", () => {
+      const update = {
+        title: "new title",
+        description: "new description",
+        cheers_count: "1",
+        comments_count: "1",
+      };
+      return request(app)
+        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .send(update)
+        .expect(400);
+    });
+
+    test("should respond 200 if body contains title, desc & note_id is valid", () => {
+      const update = {
+        title: "new title",
+        description: "new description",
+      };
+      return request(app)
+        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .send(update)
+        .expect(200);
+    });
+
+    test("should respond 200 if body contains cheers count & note_id is valid", () => {
+      const update = {
+        cheers_count: "1",
+      };
+      return request(app)
+        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .send(update)
+        .expect(200);
+    });
+
+    test("should respond 200 if body contains comments count & note_id is valid", () => {
+      const update = {
+        comments_count: "1",
+      };
+      return request(app)
+        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .send(update)
+        .expect(200);
+    });
+  });
+
   describe("DEL Note", () => {
     test("should respond status 400 if note id does not exist", () => {
       return request(app).delete("/api/notes/555555").expect(400);

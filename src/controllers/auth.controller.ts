@@ -5,7 +5,7 @@ import UserModel from "../models/users.model";
 
 dotenv.config();
 
-const realm = Realm.App.getApp(process.env.APP_ID);
+export const realm = Realm.App.getApp(process.env.APP_ID);
 
 // POST sign up new user
 export const postUser = async (req: Request, res: Response) => {
