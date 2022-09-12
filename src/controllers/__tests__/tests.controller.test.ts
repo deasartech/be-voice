@@ -284,6 +284,54 @@ describe("__Notes__", () => {
     });
   });
 
+  describe("GET Note", () => {
+    test("should respond 400 if note id invalid", () => {
+      return request(app).get("/api/notes/lolwrongid").expect(400);
+    });
+
+    test("should return 400 if note id invalid", () => {
+      return request(app).get("/api/notes/00000000").expect(400);
+    });
+
+    test("should respond 401 if note not found", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes/231cff3be052d31e3a6170c7")
+        .expect(401)
+        .expect("Content-type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { msg } = body;
+          // ASSERT
+          expect(msg).toBe("Note Not Found");
+        });
+    });
+
+    test("should return 200 with note and msg", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes/631cff3be052d31e3a6170c7")
+        .expect(200)
+        .expect("Content-Type", "application/json; charset=utf-8")
+        .then(({ body }) => {
+          const { res, msg } = body;
+          // ASSERT
+          expect(res._id).toBe("631cff3be052d31e3a6170c7");
+          expect(res.created_at).toBe(
+            "Sat Sep 10 2022 22:18:51 GMT+0100 (British Summer Time)"
+          );
+          expect(res.description).toBe("NEW AMAZING DESCRIPTION");
+          expect(res.voice_note_url_string).toBe("randomurl.url.com");
+          expect(res.img_url_str).toBe("random_img_url.com");
+          expect(res.user.uid).toBe("631917ab832ed938a5517cdb");
+          expect(res.user.username).toBe("one");
+          expect(res.comments_count).toBe(2);
+          expect(res.cheers_count).toBe(2);
+          expect(res.topic).toBe("business");
+          expect(msg).toBe("Successfully Found Note");
+        });
+    });
+  });
+
   describe("POST Note", () => {
     test("should should respond with 401 user uid not found", () => {
       const note = {
@@ -345,7 +393,7 @@ describe("__Notes__", () => {
     });
   });
 
-  describe.only("PATCH Note", () => {
+  describe("PATCH Note", () => {
     test("should respond with 400 if id is not valid", () => {
       const update = {
         title: "new title",
