@@ -21,6 +21,21 @@ export const getNotes = async (req: Request, res: Response) => {
   }
 };
 
+// GET Note by ID
+export const getNoteByID = async (req: Request, res: Response) => {
+  const { note_id } = req.params;
+  try {
+    const note = await NoteModel.findOne({ _id: note_id });
+    console.log("Successfully Found Note", note);
+    note !== null
+      ? res.status(200).send({ res: note, msg: "Successfully Found Note" })
+      : res.status(401).send({ msg: "Note Not Found" });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({ msg: "Bad Request" });
+  }
+};
+
 // POST Note
 export const postNote = async (req: Request, res: Response) => {
   const {

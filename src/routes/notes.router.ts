@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getNotes,
+  getNoteByID,
   patchNoteByID,
   postNote,
   removeNoteByID,
@@ -12,6 +13,7 @@ notesRouter.use(express.json());
 
 // GET
 notesRouter.route("/").get(getNotes);
+notesRouter.route("/:note_id").get(getNoteByID);
 
 // POST
 notesRouter.route("/post").post(postNote);
