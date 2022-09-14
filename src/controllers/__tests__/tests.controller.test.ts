@@ -1,4 +1,5 @@
 import { agent as request } from "supertest";
+import { expect } from "chai";
 import { faker } from "@faker-js/faker";
 import { app } from "../../index";
 import {
@@ -23,13 +24,13 @@ describe("__Topics__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { topics } = body;
-          expect(topics).toBeInstanceOf(Array);
+          expect(topics).instanceOf(Array);
           topics.forEach((topic: ITopic) => {
-            expect(topic).toHaveProperty("description");
-            expect(topic).toHaveProperty("slug");
-            expect(topic._id).toEqual(expect.any(String));
-            expect(topic.description).toEqual(expect.any(String));
-            expect(topic.slug).toEqual(expect.any(String));
+            expect(topic).to.have.property("description");
+            expect(topic).to.have.property("slug");
+            expect(topic._id).to.be.a("string");
+            expect(topic.description).to.be.a("string");
+            expect(topic.slug).to.be.a("string");
           });
         });
     });
@@ -41,7 +42,7 @@ describe("__Topics__", () => {
         .get("/api/topics/none")
         .expect(404)
         .then(({ body }: any) => {
-          expect(body.msg).toBe("Topic Not Found");
+          expect(body.msg).to.equal("Topic Not Found");
         });
     });
 
@@ -52,13 +53,13 @@ describe("__Topics__", () => {
         .then(({ body }: any) => {
           const { topic } = body;
           console.log(topic);
-          expect(topic).toBeInstanceOf(Array);
-          expect(topic).toHaveLength(1);
+          expect(topic).instanceOf(Array);
+          expect(topic).to.have.lengthOf(1);
           const obj = topic[0];
-          expect(obj).toBeInstanceOf(Object);
-          expect(obj).toHaveProperty("_id");
-          expect(obj).toHaveProperty("description");
-          expect(obj).toHaveProperty("slug");
+          expect(obj).instanceOf(Object);
+          expect(obj).to.have.property("_id");
+          expect(obj).to.have.property("description");
+          expect(obj).to.have.property("slug");
         });
     });
   });
@@ -74,42 +75,42 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { users } = body;
-          expect(users).toBeInstanceOf(Array);
+          expect(users).instanceOf(Array);
           users.forEach((user: IUser) => {
-            expect(user).toHaveProperty("_id");
-            expect(user).toHaveProperty("uid");
-            expect(user).toHaveProperty("email");
-            expect(user).toHaveProperty("username");
-            expect(user.details).toHaveProperty("first_name");
-            expect(user.details).toHaveProperty("last_name");
-            expect(user.details).toHaveProperty("date_of_birth");
-            expect(user.details).toHaveProperty("phone_number");
-            expect(user).toHaveProperty("created_at");
-            expect(user).toHaveProperty("description");
-            expect(user).toHaveProperty("subscribers_count");
-            expect(user).toHaveProperty("notes_count");
-            expect(user).toHaveProperty("favorites_count");
-            expect(user).toHaveProperty("replies_count");
-            expect(user).toHaveProperty("time_zone");
-            expect(user).toHaveProperty("location");
-            expect(user).toHaveProperty("lang");
-            expect(user).toHaveProperty("profile_photo_image_url");
-            expect(user).toHaveProperty("profile_color");
-            expect(user).toHaveProperty("subscriptions");
-            expect(user).toHaveProperty("protected");
-            expect(user).toHaveProperty("verified");
-            expect(user._id).toEqual(expect.any(String));
-            expect(user.email).toEqual(expect.any(String));
-            expect(user.username).toEqual(expect.any(String));
-            expect(user.created_at).toEqual(expect.any(String));
-            expect(user.subscribers_count).toEqual(expect.any(Number));
-            expect(user.notes_count).toEqual(expect.any(Number));
-            expect(user.favorites_count).toEqual(expect.any(Number));
-            expect(user.replies_count).toEqual(expect.any(Number));
-            expect(user.lang).toEqual(expect.any(String));
-            expect(user.subscriptions).toEqual(expect.any(Array));
-            expect(user.protected).toEqual(expect.any(Boolean));
-            expect(user.verified).toEqual(expect.any(Boolean));
+            expect(user).to.have.property("_id");
+            expect(user).to.have.property("uid");
+            expect(user).to.have.property("email");
+            expect(user).to.have.property("username");
+            expect(user.details).to.have.property("first_name");
+            expect(user.details).to.have.property("last_name");
+            expect(user.details).to.have.property("date_of_birth");
+            expect(user.details).to.have.property("phone_number");
+            expect(user).to.have.property("created_at");
+            expect(user).to.have.property("description");
+            expect(user).to.have.property("subscribers_count");
+            expect(user).to.have.property("notes_count");
+            expect(user).to.have.property("favorites_count");
+            expect(user).to.have.property("replies_count");
+            expect(user).to.have.property("time_zone");
+            expect(user).to.have.property("location");
+            expect(user).to.have.property("lang");
+            expect(user).to.have.property("profile_photo_image_url");
+            expect(user).to.have.property("profile_color");
+            expect(user).to.have.property("subscriptions");
+            expect(user).to.have.property("protected");
+            expect(user).to.have.property("verified");
+            expect(user._id).to.be.a("string");
+            expect(user.email).to.be.a("string");
+            expect(user.username).to.be.a("string");
+            expect(user.created_at).to.be.a("string");
+            expect(user.subscribers_count).to.be.a("number");
+            expect(user.notes_count).to.be.a("number");
+            expect(user.favorites_count).to.be.a("number");
+            expect(user.replies_count).to.be.a("number");
+            expect(user.lang).to.be.a("string");
+            expect(user.subscriptions).to.be.a("array");
+            expect(user.protected).to.be.a("boolean");
+            expect(user.verified).to.be.a("boolean");
           });
         });
     });
@@ -121,7 +122,7 @@ describe("__Users__", () => {
         .get("/api/users/doesntexist")
         .expect(404)
         .then(({ body }: any) => {
-          expect(body.msg).toBe("User Not Found");
+          expect(body.msg).to.equal("User Not Found");
         });
     });
 
@@ -132,25 +133,25 @@ describe("__Users__", () => {
         .then(({ body }: any) => {
           const { user } = body;
           console.log(user);
-          expect(user).toBeInstanceOf(Object);
-          expect(user).toHaveProperty("_id");
-          expect(user).toHaveProperty("uid");
-          expect(user).toHaveProperty("email");
-          expect(user).toHaveProperty("username");
-          expect(user).toHaveProperty("created_at");
-          expect(user).toHaveProperty("description");
-          expect(user).toHaveProperty("subscribers_count");
-          expect(user).toHaveProperty("notes_count");
-          expect(user).toHaveProperty("favorites_count");
-          expect(user).toHaveProperty("replies_count");
-          expect(user).toHaveProperty("time_zone");
-          expect(user).toHaveProperty("location");
-          expect(user).toHaveProperty("lang");
-          expect(user).toHaveProperty("profile_photo_image_url");
-          expect(user).toHaveProperty("profile_color");
-          expect(user).toHaveProperty("subscriptions");
-          expect(user).toHaveProperty("protected");
-          expect(user).toHaveProperty("verified");
+          expect(user).instanceOf(Object);
+          expect(user).to.have.property("_id");
+          expect(user).to.have.property("uid");
+          expect(user).to.have.property("email");
+          expect(user).to.have.property("username");
+          expect(user).to.have.property("created_at");
+          expect(user).to.have.property("description");
+          expect(user).to.have.property("subscribers_count");
+          expect(user).to.have.property("notes_count");
+          expect(user).to.have.property("favorites_count");
+          expect(user).to.have.property("replies_count");
+          expect(user).to.have.property("time_zone");
+          expect(user).to.have.property("location");
+          expect(user).to.have.property("lang");
+          expect(user).to.have.property("profile_photo_image_url");
+          expect(user).to.have.property("profile_color");
+          expect(user).to.have.property("subscriptions");
+          expect(user).to.have.property("protected");
+          expect(user).to.have.property("verified");
         });
     });
   });
@@ -167,10 +168,10 @@ describe("__Users__", () => {
         .then(({ body }: any) => {
           const { response } = body;
           console.log(response);
-          expect(response).toBeInstanceOf(Object);
-          expect(response.acknowledged).toBe(true);
-          expect(response.modifiedCount).toEqual(expect.any(Number));
-          expect(response).toHaveProperty("matchedCount");
+          expect(response).instanceOf(Object);
+          expect(response.acknowledged).to.equal(true);
+          expect(response.modifiedCount).to.be.a("number");
+          expect(response).to.have.property("matchedCount");
         });
     });
 
@@ -189,10 +190,10 @@ describe("__Users__", () => {
         .then(({ body }: any) => {
           const { response } = body;
           console.log(response);
-          expect(response).toBeInstanceOf(Object);
-          expect(response.acknowledged).toBe(true);
-          expect(response.modifiedCount).toBe(1);
-          expect(response.matchedCount).toBe(1);
+          expect(response).instanceOf(Object);
+          expect(response.acknowledged).to.equal(true);
+          expect(response.modifiedCount).to.equal(1);
+          expect(response.matchedCount).to.equal(1);
         });
     });
   });
@@ -212,10 +213,10 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          expect(response).toBeInstanceOf(Object);
-          expect(response.acknowledged).toBe(true);
-          expect(response.modifiedCount).toEqual(expect.any(Number));
-          expect(response).toHaveProperty("matchedCount");
+          expect(response).instanceOf(Object);
+          expect(response.acknowledged).to.equal(true);
+          expect(response.modifiedCount).to.be.a("number");
+          expect(response).to.have.property("matchedCount");
         });
     });
   });
@@ -229,7 +230,7 @@ describe("__Users__", () => {
         .expect(401)
         .then(({ body }: any) => {
           const { msg } = body;
-          expect(msg).toBe("Error Not Authorized: Details not complete");
+          expect(msg).to.equal("Error Not Authorized: Details not complete");
         });
     });
 
@@ -242,10 +243,10 @@ describe("__Users__", () => {
         .then(({ body }: any) => {
           const { response } = body;
           console.log(response, "<<< response");
-          expect(response).toBeInstanceOf(Object);
-          expect(response.acknowledged).toBe(true);
-          expect(response.modifiedCount).toEqual(expect.any(Number));
-          expect(response).toHaveProperty("matchedCount");
+          expect(response).instanceOf(Object);
+          expect(response.acknowledged).to.equal(true);
+          expect(response.modifiedCount).to.be.a("number");
+          expect(response).to.have.property("matchedCount");
         });
     });
   });
@@ -267,18 +268,18 @@ describe("__Notes__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { notes } = body;
-          expect(notes).toBeInstanceOf(Array);
+          expect(notes).instanceOf(Array);
           notes.forEach((note: INote) => {
-            expect(note._id).toEqual(expect.any(String));
-            expect(note.created_at).toEqual(expect.any(String));
-            expect(note.description).toEqual(expect.any(String));
-            expect(note.voice_note_url_string).toEqual(expect.any(String));
-            expect(note.img_url_str).toEqual(expect.any(String));
-            expect(note.user.uid).toEqual(expect.any(String));
-            expect(note.user.username).toEqual(expect.any(String));
-            expect(note.comments_count).toEqual(expect.any(Number));
-            expect(note.cheers_count).toEqual(expect.any(Number));
-            expect(note.topic).toEqual(expect.any(String));
+            expect(note._id).to.be.a("string");
+            expect(note.created_at).to.be.a("string");
+            expect(note.description).to.be.a("string");
+            expect(note.voice_note_url_string).to.be.a("string");
+            expect(note.img_url_str).to.be.a("string");
+            expect(note.user.uid).to.be.a("string");
+            expect(note.user.username).to.be.a("string");
+            expect(note.comments_count).to.be.a("number");
+            expect(note.cheers_count).to.be.a("number");
+            expect(note.topic).to.be.a("string");
           });
         });
     });
@@ -302,7 +303,7 @@ describe("__Notes__", () => {
         .then(({ body }) => {
           const { msg } = body;
           // ASSERT
-          expect(msg).toBe("Note Not Found");
+          expect(msg).to.equal("Note Not Found");
         });
     });
 
@@ -315,19 +316,19 @@ describe("__Notes__", () => {
         .then(({ body }) => {
           const { res, msg } = body;
           // ASSERT
-          expect(res._id).toBe("631cff3be052d31e3a6170c7");
-          expect(res.created_at).toBe(
+          expect(res._id).to.equal("631cff3be052d31e3a6170c7");
+          expect(res.created_at).to.equal(
             "Sat Sep 10 2022 22:18:51 GMT+0100 (British Summer Time)"
           );
-          expect(res.description).toBe("NEW AMAZING DESCRIPTION");
-          expect(res.voice_note_url_string).toBe("randomurl.url.com");
-          expect(res.img_url_str).toBe("random_img_url.com");
-          expect(res.user.uid).toBe("631917ab832ed938a5517cdb");
-          expect(res.user.username).toBe("one");
-          expect(res.comments_count).toBe(2);
-          expect(res.cheers_count).toBe(2);
-          expect(res.topic).toBe("business");
-          expect(msg).toBe("Successfully Found Note");
+          expect(res.description).to.equal("NEW AMAZING DESCRIPTION");
+          expect(res.voice_note_url_string).to.equal("randomurl.url.com");
+          expect(res.img_url_str).to.equal("random_img_url.com");
+          expect(res.user.uid).to.equal("631917ab832ed938a5517cdb");
+          expect(res.user.username).to.equal("one");
+          expect(res.comments_count).to.equal(2);
+          expect(res.cheers_count).to.equal(2);
+          expect(res.topic).to.equal("business");
+          expect(msg).to.equal("Successfully Found Note");
         });
     });
   });
@@ -348,7 +349,7 @@ describe("__Notes__", () => {
         .send(note)
         .expect(401)
         .then(({ body }: any) => {
-          expect(body.msg).toBe("Cannot Post Note: User Does Not Exist");
+          expect(body.msg).to.equal("Cannot Post Note: User Does Not Exist");
         });
     });
 
@@ -367,7 +368,7 @@ describe("__Notes__", () => {
         .send(note)
         .expect(401)
         .then(({ body }: any) => {
-          expect(body.msg).toBe("Cannot Post Note: Topic Does Not Exist");
+          expect(body.msg).to.equal("Cannot Post Note: Topic Does Not Exist");
         });
     });
 
@@ -388,7 +389,7 @@ describe("__Notes__", () => {
         .then(({ body }: any) => {
           const { res, msg } = body;
           TEMP_DEL_ID = res._id;
-          expect(msg).toBe("Successfully Added New Note");
+          expect(msg).to.equal("Successfully Added New Note");
         });
     });
   });
@@ -461,9 +462,9 @@ describe("__Notes__", () => {
         .expect(200)
         .then(({ body }) => {
           const { res, msg } = body;
-          expect(res.acknowledged).toBe(true);
-          expect(res.deletedCount).toBe(1);
-          expect(msg).toBe("Successfully Deleted Note");
+          expect(res.acknowledged).to.equal(true);
+          expect(res.deletedCount).to.equal(1);
+          expect(msg).to.equal("Successfully Deleted Note");
         });
     });
   });
