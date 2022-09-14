@@ -9,10 +9,37 @@ import TopicModel from "../models/topics.model";
 import Realm from "realm";
 import { realm } from "./auth.controller";
 
+// interface for sort object
+type SortOrder = 1 | -1 | "asc" | "ascending" | "desc" | "descending";
+
+interface Sort {
+  [index: string]: SortOrder;
+}
+
+type SortBy = "created_at" | "comments_count" | "cheers_count";
+
 // GET All Notes
 export const getNotes = async (req: Request, res: Response) => {
+  const { sort_by, order, topic } = req.query;
+  const sort: Sort = {};
+
+  if (sort_by == "created_at" && order === "asc") {
+    sort.created_at = 1;
+  } else if (sort_by == "created_at" && order === "desc") {
+    sort.created_at = -1;
+  } else if (sort_by == "comments_count" && order === "asc") {
+    sort.comments_count = 1;
+  } else if (sort_by == "comments_count" && order === "desc") {
+    sort.comments_count = -1;
+  } else if (sort_by == "cheers_count" && order === "asc") {
+    sort.cheers_count = 1;
+  } else if (sort_by == "cheers_count" && order === "desc") {
+    sort.cheers_count = -1;
+  }
+
   try {
-    const notes = await NoteModel.find({});
+    // const notes = await NoteModel.find({});
+    const notes = await NoteModel.find({}).sort(sort);
     console.log("Found Notes", notes);
     res.status(200).send({ notes });
   } catch (err) {

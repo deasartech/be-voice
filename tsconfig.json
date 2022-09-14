@@ -13,5 +13,5 @@
     }
     // "strict": true
   },
-  "include": ["src/**/*", "database.d.ts"]
+  "include": ["src/**/*", "database.d.ts", "chai-sorted.d.ts"]
 }

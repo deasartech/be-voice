@@ -1,5 +1,6 @@
 import { agent as request } from "supertest";
-import { expect } from "chai";
+import chai from "chai";
+const chaiSorted = require("chai-sorted");
 import { faker } from "@faker-js/faker";
 import { app } from "../../index";
 import {
@@ -13,6 +14,9 @@ import { INote, INoteUpdatePost, NoteUser } from "../../models/notes.model";
 beforeAll(async () => await connectMongoose());
 
 afterAll(async () => await disconnectMongoose());
+
+const expect = chai.expect;
+chai.use(chaiSorted);
 
 // Topics Tests
 
@@ -281,6 +285,74 @@ describe("__Notes__", () => {
             expect(note.cheers_count).to.be.a("number");
             expect(note.topic).to.be.a("string");
           });
+        });
+    });
+
+    test.only("should check sorted by comments_count in asc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=comments_count&order=asc")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => a.comments_count - b.comments_count
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
+
+    test.only("should check sorted by comments_count in desc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=comments_count&order=desc")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => b.comments_count - a.comments_count
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
+
+    test.only("should check sorted by cheers_count in asc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=cheers_count&order=asc")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => a.cheers_count - b.cheers_count
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
+
+    test.only("should check sorted by cheers_count in desc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=cheers_count&order=desc")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => b.cheers_count - a.cheers_count
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
         });
     });
   });
