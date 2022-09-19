@@ -8,12 +8,18 @@ import UserModel from "../models/users.model";
 import TopicModel from "../models/topics.model";
 import Realm from "realm";
 import { realm } from "./auth.controller";
+import { Console } from "console";
 
 // interface for sort object
 type SortOrder = 1 | -1 | "asc" | "ascending" | "desc" | "descending";
+type TopicType = string | null;
 
 interface Sort {
   [index: string]: SortOrder;
+}
+
+interface TopicTypes {
+  [index: string]: TopicType;
 }
 
 type SortBy = "created_at" | "comments_count" | "cheers_count";
@@ -22,6 +28,7 @@ type SortBy = "created_at" | "comments_count" | "cheers_count";
 export const getNotes = async (req: Request, res: Response) => {
   const { sort_by, order, topic } = req.query;
   const sort: Sort = {};
+  const topicQuery: TopicTypes = {};
 
   if (sort_by == "created_at" && order === "asc") {
     sort.created_at = 1;
@@ -38,10 +45,20 @@ export const getNotes = async (req: Request, res: Response) => {
   }
 
   try {
+    // check topic exists first - write a function
+    const topicExists = await TopicModel.find({ slug: topic });
+
+    if (topicExists.length && typeof topic === "string") {
+      topicQuery.topic = topic;
+    } else if (topic) {
+      console.log("Topic Not Found");
+    }
+
     // const notes = await NoteModel.find({});
-    const notes = await NoteModel.find({}).sort(sort);
-    console.log("Found Notes", notes);
-    res.status(200).send({ notes });
+    const notes = await NoteModel.find(topicQuery).sort(sort);
+    topic && topicExists.length === 0
+      ? res.status(400).send({ msg: "Topic Not Found" })
+      : res.status(200).send({ notes });
   } catch (err) {
     console.log(err);
     res.status(400).send({ msg: "Bad Request" });
