@@ -30,24 +30,20 @@ export const getNotes = async (req: Request, res: Response) => {
   const sort: Sort = {};
   const topicQuery: TopicTypes = {};
 
-  if (sort_by == "created_at" && order === "asc") {
+  if (sort_by === "created_at" && order === "asc") {
     sort.created_at = 1;
-  } else if (sort_by == "created_at" && order === "desc") {
+  } else if (sort_by === "created_at") {
     sort.created_at = -1;
-  } else if (sort_by == "created_at") {
-    sort.created_at = -1;
-  } else if (sort_by == "comments_count" && order === "asc") {
+  } else if (sort_by === "comments_count" && order === "asc") {
     sort.comments_count = 1;
-  } else if (sort_by == "comments_count" && order === "desc") {
+  } else if (sort_by === "comments_count") {
     sort.comments_count = -1;
-  } else if (sort_by == "comments_count") {
-    sort.comments_count = -1;
-  } else if (sort_by == "cheers_count" && order === "asc") {
+  } else if (sort_by === "cheers_count" && order === "asc") {
     sort.cheers_count = 1;
-  } else if (sort_by == "cheers_count" && order === "desc") {
+  } else if (sort_by === "cheers_count") {
     sort.cheers_count = -1;
-  } else if (sort_by == "cheers_count") {
-    sort.cheers_count = -1;
+  } else {
+    sort.created_at = -1;
   }
 
   try {
