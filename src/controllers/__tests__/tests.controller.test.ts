@@ -288,7 +288,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test.only("should check sorted by comments_count in asc order", () => {
+    test("should check sorted by comments_count in asc order", () => {
       // ACT
       return request(app)
         .get("/api/notes?sort_by=comments_count&order=asc")
@@ -305,7 +305,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test.only("should check sorted by comments_count in desc order", () => {
+    test("should check sorted by comments_count in desc order", () => {
       // ACT
       return request(app)
         .get("/api/notes?sort_by=comments_count&order=desc")
@@ -322,7 +322,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test.only("should check sorted by cheers_count in asc order", () => {
+    test("should check sorted by cheers_count in asc order", () => {
       // ACT
       return request(app)
         .get("/api/notes?sort_by=cheers_count&order=asc")
@@ -339,7 +339,7 @@ describe("__Notes__", () => {
         });
     });
 
-    test.only("should check sorted by cheers_count in desc order", () => {
+    test("should check sorted by cheers_count in desc order", () => {
       // ACT
       return request(app)
         .get("/api/notes?sort_by=cheers_count&order=desc")
@@ -355,6 +355,66 @@ describe("__Notes__", () => {
           expect(notes).to.eql(manualSort);
         });
     });
+
+    test("should respond 400 topic not found", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?topic=doesnotexist")
+        .expect(400)
+        .then(({ body }: any) => {
+          const { msg } = body;
+          // ASSERT
+          expect(msg).to.equal("Topic Not Found");
+        });
+    });
+
+    test("should respond 400 topic not found", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=cheers_count&order=desc&topic=busine")
+        .expect(400)
+        .then(({ body }: any) => {
+          const { msg } = body;
+          // ASSERT
+          expect(msg).to.equal("Topic Not Found");
+        });
+    });
+
+    test("should check sorted by cheers_count in desc order and topic exists", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?sort_by=cheers_count&order=desc&topic=business")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => b.cheers_count - a.cheers_count
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
+
+    // CANNOT TEST CREATED AT ORDER: must use numbers for created_at values not strings
+
+    // test.only("should respond 200 by topic and default created_at desc order", () => {
+    //   // ACT
+    //   return request(app)
+    //     .get("/api/notes?topic=business")
+    //     .expect(200)
+    //     .then(({ body }: any) => {
+    //       const { notes } = body;
+    //       const copy = [...notes];
+    //       const manualSort = copy.sort(
+    //         (a: INote, b: INote) => b.created_at - a.created_at
+    //       );
+    //       // ASSERT
+    //       expect(notes).to.be.a("array");
+    //       expect(notes).to.eql(manualSort);
+    //     });
+    // });
   });
 
   describe("GET Note", () => {
