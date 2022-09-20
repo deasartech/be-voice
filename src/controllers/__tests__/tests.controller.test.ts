@@ -106,7 +106,7 @@ describe("__Users__", () => {
             expect(user._id).to.be.a("string");
             expect(user.email).to.be.a("string");
             expect(user.username).to.be.a("string");
-            expect(user.created_at).to.be.a("string");
+            expect(user.created_at).to.be.a("number");
             expect(user.subscribers_count).to.be.a("number");
             expect(user.notes_count).to.be.a("number");
             expect(user.favorites_count).to.be.a("number");
@@ -275,7 +275,7 @@ describe("__Notes__", () => {
           expect(notes).instanceOf(Array);
           notes.forEach((note: INote) => {
             expect(note._id).to.be.a("string");
-            expect(note.created_at).to.be.a("string");
+            expect(note.created_at).to.be.a("number");
             expect(note.description).to.be.a("string");
             expect(note.voice_note_url_string).to.be.a("string");
             expect(note.img_url_str).to.be.a("string");
@@ -397,24 +397,39 @@ describe("__Notes__", () => {
         });
     });
 
-    // CANNOT TEST CREATED AT ORDER: must use numbers for created_at values not strings
+    test("should respond 200 by topic and default created_at desc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?topic=business")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => b.created_at - a.created_at
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
 
-    // test.only("should respond 200 by topic and default created_at desc order", () => {
-    //   // ACT
-    //   return request(app)
-    //     .get("/api/notes?topic=business")
-    //     .expect(200)
-    //     .then(({ body }: any) => {
-    //       const { notes } = body;
-    //       const copy = [...notes];
-    //       const manualSort = copy.sort(
-    //         (a: INote, b: INote) => b.created_at - a.created_at
-    //       );
-    //       // ASSERT
-    //       expect(notes).to.be.a("array");
-    //       expect(notes).to.eql(manualSort);
-    //     });
-    // });
+    test("should respond 200 by topic and default created_at desc order", () => {
+      // ACT
+      return request(app)
+        .get("/api/notes?topic=business&sort_by=created_at&order=asc")
+        .expect(200)
+        .then(({ body }: any) => {
+          const { notes } = body;
+          const copy = [...notes];
+          const manualSort = copy.sort(
+            (a: INote, b: INote) => a.created_at - b.created_at
+          );
+          // ASSERT
+          expect(notes).to.be.a("array");
+          expect(notes).to.eql(manualSort);
+        });
+    });
   });
 
   describe("GET Note", () => {
@@ -442,24 +457,22 @@ describe("__Notes__", () => {
     test("should return 200 with note and msg", () => {
       // ACT
       return request(app)
-        .get("/api/notes/631cff3be052d31e3a6170c7")
+        .get("/api/notes/6329b03e6ce5816293d96a9e")
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
           const { res, msg } = body;
           // ASSERT
-          expect(res._id).to.equal("631cff3be052d31e3a6170c7");
-          expect(res.created_at).to.equal(
-            "Sat Sep 10 2022 22:18:51 GMT+0100 (British Summer Time)"
-          );
-          expect(res.description).to.equal("NEW AMAZING DESCRIPTION");
+          expect(res._id).to.equal("6329b03e6ce5816293d96a9e");
+          expect(res.created_at).to.equal(1663676478197);
+          expect(res.description).to.equal("The Burr special");
           expect(res.voice_note_url_string).to.equal("randomurl.url.com");
           expect(res.img_url_str).to.equal("random_img_url.com");
           expect(res.user.uid).to.equal("631917ab832ed938a5517cdb");
           expect(res.user.username).to.equal("one");
-          expect(res.comments_count).to.equal(2);
-          expect(res.cheers_count).to.equal(2);
-          expect(res.topic).to.equal("business");
+          expect(res.comments_count).to.equal(0);
+          expect(res.cheers_count).to.equal(0);
+          expect(res.topic).to.equal("comedy");
           expect(msg).to.equal("Successfully Found Note");
         });
     });
@@ -557,7 +570,7 @@ describe("__Notes__", () => {
         description: "new description",
       };
       return request(app)
-        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .patch("/api/notes/6329b06d6ce5816293d96ab0")
         .send(update)
         .expect(200);
     });
@@ -567,7 +580,7 @@ describe("__Notes__", () => {
         cheers_count: "1",
       };
       return request(app)
-        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .patch("/api/notes/6329b06d6ce5816293d96ab0")
         .send(update)
         .expect(200);
     });
@@ -577,7 +590,7 @@ describe("__Notes__", () => {
         comments_count: "1",
       };
       return request(app)
-        .patch("/api/notes/631d0061b8396ab9eda6f909")
+        .patch("/api/notes/6329b06d6ce5816293d96ab0")
         .send(update)
         .expect(200);
     });

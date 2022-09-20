@@ -107,7 +107,7 @@ export const postNote = async (req: Request, res: Response) => {
       };
       // minimum values - add more to further develop
       const updates: INoteUpdate = {
-        created_at: Date(),
+        created_at: Number(new Date()),
         title: title,
         description: description,
         voice_note_url_string: voice_note_url_string,
