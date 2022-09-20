@@ -254,6 +254,51 @@ describe("__Users__", () => {
         });
     });
   });
+
+  describe("PATCH /users/:uid/subscribe", () => {
+    test("should respond 400 if uid does not exist", () => {
+      // ARRANGE
+      const user = { email: "one@test.com", password: "test123" };
+      // ACT
+      return request(app)
+        .post("/api/auth/connect")
+        .send(user)
+        .expect(200)
+        .then(function (res) {
+          return request(app)
+            .patch("/api/users/6kjsdfklnone/subscribe")
+            .send()
+            .expect(400);
+        })
+        .then((res) => {
+          console.log(res, "res here");
+        });
+    });
+
+    test("should sign in user and then subsribe to user and unsubscribe", () => {
+      // ARRANGE
+      const user = { email: "deant@test.com", password: "test123" };
+      const subscribe = { action: "subscribe" };
+      const unsubscribe = { action: "unsubscribe" };
+      // ACT
+      return request(app)
+        .post("/api/auth/connect")
+        .send(user)
+        .expect(200)
+        .then(function (res) {
+          return request(app)
+            .patch("/api/users/631917ab832ed938a5517cdb/subscribe")
+            .send(subscribe)
+            .expect(200)
+            .then(function (res) {
+              return request(app)
+                .patch("/api/users/631917ab832ed938a5517cdb/subscribe")
+                .send(unsubscribe)
+                .expect(200);
+            });
+        });
+    });
+  });
 });
 
 // Notes Tests

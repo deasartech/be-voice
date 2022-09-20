@@ -3,6 +3,8 @@ import UserModel, {
   IUserUpdate,
   IUserDetailsUpdate,
 } from "../models/users.model";
+import Realm from "realm";
+import { realm } from "./auth.controller";
 
 // Custom User Data
 
@@ -139,6 +141,62 @@ export const patchUserReplierByUID = async (req: Request, res: Response) => {
         .status(401)
         .send({ msg: "Error Not Authorized: Details not complete" });
     }
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).send({ msg: err.message });
+  }
+};
+
+// PATCH subscribe by uid
+export const patchUserSubsByUID = async (req: Request, res: Response) => {
+  try {
+    const { uid } = req.params;
+    const { action } = req.body;
+    let updateSubscribers = {};
+    let updateSubscriptions = {};
+    const currentUser = realm.currentUser.id;
+
+    if (action === "subscribe") {
+      updateSubscribers = {
+        $addToSet: {
+          subscribers: currentUser,
+        },
+      };
+
+      updateSubscriptions = {
+        $addToSet: {
+          subscriptions: uid,
+        },
+      };
+    } else if (action === "unsubscribe") {
+      updateSubscribers = {
+        $pull: {
+          subscribers: currentUser,
+        },
+      };
+
+      updateSubscriptions = {
+        $pull: {
+          subscriptions: uid,
+        },
+      };
+    }
+
+    const response = await UserModel.updateOne({ uid: uid }, updateSubscribers);
+
+    if (response.matchedCount === 1) {
+      const mySubscriptions = await UserModel.updateOne(
+        { uid: currentUser },
+        updateSubscriptions
+      );
+    }
+    console.log(response, "response");
+    response.acknowledged === false
+      ? res.status(400).send({ msg: "User Not Found" })
+      : res.status(200).send({
+          msg: "Successfully updated user subscribers and current users subscriptions",
+          response: response,
+        });
   } catch (err) {
     console.log(err.message);
     res.status(400).send({ msg: err.message });
