@@ -23,6 +23,7 @@ export interface IUser extends Document {
   lang: string;
   profile_photo_image_url: string;
   profile_color: string;
+  subscribers: string[];
   subscriptions: string[];
   interests: string[];
   protected: boolean;
@@ -47,7 +48,8 @@ export interface IUserUpdate {
   lang?: string;
   profile_photo_image_url?: string;
   profile_color?: string;
-  following?: string[];
+  subscribers?: string[];
+  subscriptions?: string[];
   protected?: boolean;
   verified?: boolean;
 }
@@ -86,6 +88,7 @@ export const UserSchema: Schema = new Schema({
   lang: { type: String },
   profile_photo_image_url: { type: String, default: null },
   profile_color: { type: String, default: null },
+  subscribers: { type: Array },
   subscriptions: { type: Array },
   interests: { type: Array },
   protected: { type: Boolean },

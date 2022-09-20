@@ -8,7 +8,6 @@ import UserModel from "../models/users.model";
 import TopicModel from "../models/topics.model";
 import Realm from "realm";
 import { realm } from "./auth.controller";
-import { Console } from "console";
 
 // interface for sort object
 type SortOrder = 1 | -1 | "asc" | "ascending" | "desc" | "descending";
