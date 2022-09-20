@@ -15,7 +15,7 @@ const NoteUserSchema: Schema = new Schema({
 // Note Interface
 export interface INote extends Document {
   _id?: ObjectId;
-  created_at: string;
+  created_at: number;
   title: string;
   description: string;
   voice_note_url_string: string;
@@ -32,7 +32,7 @@ export interface INote extends Document {
 
 // For Controller Use
 export interface INoteUpdate {
-  created_at: string;
+  created_at: number;
   title: string;
   description: string;
   voice_note_url_string: string;
@@ -64,7 +64,7 @@ export interface INoteUpdatePost {
 // Note Schema
 export const NoteSchema: Schema = new Schema({
   // _id: { type: Schema.Types.ObjectId, required: false },
-  created_at: { type: String },
+  created_at: { type: Number },
   title: { type: String, required: true },
   description: { type: String, required: true },
   voice_note_url_string: { type: String, required: true },

@@ -22,7 +22,7 @@ export const postUser = async (req: Request, res: Response) => {
         date_of_birth: null,
         phone_number: null,
       },
-      created_at: Date(),
+      created_at: Number(new Date()),
       description: null,
       url: null,
       subscribers_count: 0,

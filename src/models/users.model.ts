@@ -11,7 +11,7 @@ export interface IUser extends Document {
     date_of_birth: string;
     phone_number: string;
   };
-  created_at: string;
+  created_at: number;
   description: string;
   url: string;
   subscribers_count: number;
@@ -74,7 +74,7 @@ export const UserSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   username: { type: String, required: true, unique: true },
   details: { type: DetailsSchema },
-  created_at: { type: String },
+  created_at: { type: Number },
   description: { type: String, default: null },
   url: { type: String, default: null },
   subscribers_count: { type: Number },
