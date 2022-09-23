@@ -41,6 +41,7 @@ export interface INoteUpdate {
   comments_count: number;
   cheers_count: number;
   topic: string;
+  references: string[];
 }
 
 // For PATCH cheers and comments
