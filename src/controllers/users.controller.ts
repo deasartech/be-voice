@@ -137,9 +137,7 @@ export const patchUserReplierByUID = async (req: Request, res: Response) => {
       );
       res.status(200).send({ response });
     } else {
-      res
-        .status(401)
-        .send({ msg: "Error Not Authorized: Details not complete" });
+      res.status(401).send({ msg: "Unauthorized: Details not complete" });
     }
   } catch (err) {
     console.log(err.message);
@@ -192,7 +190,7 @@ export const patchUserSubsByUID = async (req: Request, res: Response) => {
     }
     console.log(response, "response");
     response.acknowledged === false
-      ? res.status(400).send({ msg: "User Not Found" })
+      ? res.status(404).send({ msg: "User Not Found" })
       : res.status(200).send({
           msg: "Successfully updated user subscribers and current users subscriptions",
           response: response,
