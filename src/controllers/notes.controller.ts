@@ -91,6 +91,7 @@ export const postNote = async (req: Request, res: Response) => {
     voice_note_url_string,
     img_url_str,
     topic,
+    references,
   } = req.body;
   try {
     const checkTopicExists = await TopicModel.findOne({ slug: topic });
@@ -115,6 +116,7 @@ export const postNote = async (req: Request, res: Response) => {
         comments_count: 0,
         cheers_count: 0,
         topic: topic,
+        references: references,
       };
 
       // Post using Note Model

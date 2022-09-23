@@ -329,6 +329,7 @@ describe("__Notes__", () => {
             expect(note.comments_count).to.be.a("number");
             expect(note.cheers_count).to.be.a("number");
             expect(note.topic).to.be.a("string");
+            expect(note.references).to.be.a("array");
           });
         });
     });
@@ -502,22 +503,25 @@ describe("__Notes__", () => {
     test("should return 200 with note and msg", () => {
       // ACT
       return request(app)
-        .get("/api/notes/6329b03e6ce5816293d96a9e")
+        .get("/api/notes/632d8d4c5dc40caed7fc5a19")
         .expect(200)
         .expect("Content-Type", "application/json; charset=utf-8")
         .then(({ body }) => {
           const { res, msg } = body;
           // ASSERT
-          expect(res._id).to.equal("6329b03e6ce5816293d96a9e");
-          expect(res.created_at).to.equal(1663676478197);
-          expect(res.description).to.equal("The Burr special");
+          expect(res._id).to.equal("632d8d4c5dc40caed7fc5a19");
+          expect(res.created_at).to.equal(1663929676383);
+          expect(res.title).to.equal("Bloomberg 3");
+          expect(res.description).to.equal("The Bloomber Daily Roundup");
           expect(res.voice_note_url_string).to.equal("randomurl.url.com");
           expect(res.img_url_str).to.equal("random_img_url.com");
           expect(res.user.uid).to.equal("631917ab832ed938a5517cdb");
           expect(res.user.username).to.equal("one");
           expect(res.comments_count).to.equal(0);
           expect(res.cheers_count).to.equal(0);
-          expect(res.topic).to.equal("comedy");
+          expect(res.topic).to.equal("business");
+          expect(res.references[0]).to.equal("random_reference_url.com");
+          expect(res.references[1]).to.equal("random_reference2_url.com");
           expect(msg).to.equal("Successfully Found Note");
         });
     });
@@ -571,6 +575,10 @@ describe("__Notes__", () => {
         voice_note_url_string: "randomurl.url.com",
         img_url_str: "random_img_url.com",
         topic: "business",
+        references: [
+          "https://www.thetimes.co.uk/article/mini-budget-2022-uk-liz-truss-chancellor-kwarteng-tax-cuts-energy-bills-latest-news-62s3j228z",
+          "https://www.thetimes.co.uk/article/mini-budget-2022-predictions-summary-key-points-jprxzw35q",
+        ],
       };
       return request(app)
         .post("/api/notes/post")
