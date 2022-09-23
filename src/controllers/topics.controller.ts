@@ -20,6 +20,6 @@ export const getTopicBySlug = async (req: Request, res: Response) => {
       : res.status(404).send({ msg: "Topic Not Found" });
   } catch (err) {
     console.log(err);
-    res.status(400).send({ msg: "Topic Not Found" });
+    res.status(400).send({ msg: "Bad Request", res: err.message });
   }
 };

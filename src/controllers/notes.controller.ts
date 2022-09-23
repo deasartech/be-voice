@@ -58,7 +58,7 @@ export const getNotes = async (req: Request, res: Response) => {
     // const notes = await NoteModel.find({});
     const notes = await NoteModel.find(topicQuery).sort(sort);
     topic && topicExists.length === 0
-      ? res.status(400).send({ msg: "Topic Not Found" })
+      ? res.status(404).send({ msg: "Topic Not Found" })
       : res.status(200).send({ notes });
   } catch (err) {
     console.log(err);
@@ -74,7 +74,7 @@ export const getNoteByID = async (req: Request, res: Response) => {
     console.log("Successfully Found Note", note);
     note !== null
       ? res.status(200).send({ res: note, msg: "Successfully Found Note" })
-      : res.status(401).send({ msg: "Note Not Found" });
+      : res.status(404).send({ msg: "Note Not Found" });
   } catch (err) {
     console.log(err);
     res.status(400).send({ msg: "Bad Request" });
@@ -146,7 +146,7 @@ export const patchNoteByID = async (req: Request, res: Response) => {
     // }
     const update: INoteUpdatePatch = {};
     if ((title || description) && (cheers_count || comments_count)) {
-      res.status(400).send({ msg: "Error Cannot Updated Note" });
+      res.status(400).send({ msg: "Bad Request: Cannot Update Note" });
     } else if (title || description) {
       if (title) {
         update.title = title;
@@ -160,7 +160,7 @@ export const patchNoteByID = async (req: Request, res: Response) => {
         ? res
             .status(200)
             .send({ res: updatedNote, msg: "Successfully Updated Note" })
-        : res.status(400).send({ msg: "Error Cannot Updated Note" });
+        : res.status(404).send({ msg: "Note Not Found" });
     } else if (cheers_count || comments_count) {
       if (cheers_count) {
         update.cheers_count = cheers_count;
@@ -177,9 +177,9 @@ export const patchNoteByID = async (req: Request, res: Response) => {
         ? res
             .status(200)
             .send({ res: updatedCount, msg: "Successfully Updated Note" })
-        : res.status(400).send({ msg: "Error Cannot Updated Note" });
+        : res.status(404).send({ msg: "Note Not Found" });
     } else {
-      res.status(400).send({ msg: "Error Cannot Updated Note" });
+      res.status(400).send({ msg: "Bad Request" });
     }
   } catch (err) {
     console.log(err.message);

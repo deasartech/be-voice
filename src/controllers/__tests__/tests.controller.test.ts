@@ -234,7 +234,7 @@ describe("__Users__", () => {
         .expect(401)
         .then(({ body }: any) => {
           const { msg } = body;
-          expect(msg).to.equal("Error Not Authorized: Details not complete");
+          expect(msg).to.equal("Unauthorized: Details not complete");
         });
     });
 
@@ -268,7 +268,7 @@ describe("__Users__", () => {
           return request(app)
             .patch("/api/users/6kjsdfklnone/subscribe")
             .send()
-            .expect(400);
+            .expect(404);
         })
         .then((res) => {
           console.log(res, "res here");
@@ -401,11 +401,11 @@ describe("__Notes__", () => {
         });
     });
 
-    test("should respond 400 topic not found", () => {
+    test("should respond 404 Topic Not Found", () => {
       // ACT
       return request(app)
         .get("/api/notes?topic=doesnotexist")
-        .expect(400)
+        .expect(404)
         .then(({ body }: any) => {
           const { msg } = body;
           // ASSERT
@@ -413,11 +413,11 @@ describe("__Notes__", () => {
         });
     });
 
-    test("should respond 400 topic not found", () => {
+    test("should respond 404 topics not found", () => {
       // ACT
       return request(app)
         .get("/api/notes?sort_by=cheers_count&order=desc&topic=busine")
-        .expect(400)
+        .expect(404)
         .then(({ body }: any) => {
           const { msg } = body;
           // ASSERT
@@ -490,7 +490,7 @@ describe("__Notes__", () => {
       // ACT
       return request(app)
         .get("/api/notes/231cff3be052d31e3a6170c7")
-        .expect(401)
+        .expect(404)
         .expect("Content-type", "application/json; charset=utf-8")
         .then(({ body }) => {
           const { msg } = body;
@@ -585,7 +585,7 @@ describe("__Notes__", () => {
   });
 
   describe("PATCH Note", () => {
-    test("should respond with 400 if id is not valid", () => {
+    test("should respond with 404 if id is not valid", () => {
       const update = {
         title: "new title",
         description: "new description",
@@ -593,7 +593,7 @@ describe("__Notes__", () => {
       return request(app)
         .patch("/api/notes/631d0061b8396ab9e006f909")
         .send(update)
-        .expect(400);
+        .expect(404);
     });
 
     test("should respond with 400 if body contains title, desc, cheers and comments", () => {
