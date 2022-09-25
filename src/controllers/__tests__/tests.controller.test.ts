@@ -1,6 +1,5 @@
 import { agent as request } from "supertest";
 import chai from "chai";
-const chaiSorted = require("chai-sorted");
 import { faker } from "@faker-js/faker";
 import { app } from "../../index";
 import {
@@ -9,14 +8,13 @@ import {
 } from "../../services/database.service";
 import { ITopic } from "../../models/topics.model";
 import { IUser } from "../../models/users.model";
-import { INote, INoteUpdatePost, NoteUser } from "../../models/notes.model";
+import { INote } from "../../models/notes.model";
 
 beforeAll(async () => await connectMongoose());
 
 afterAll(async () => await disconnectMongoose());
 
 const expect = chai.expect;
-chai.use(chaiSorted);
 
 // Topics Tests
 
