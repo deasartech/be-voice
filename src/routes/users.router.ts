@@ -2,6 +2,7 @@ import express from "express";
 import {
   getUserByUsername,
   getUsers,
+  getUserByUID,
   patchUserByUID,
   patchUserDetailsByUID,
   patchUserReplierByUID,
@@ -14,7 +15,8 @@ usersRouter.use(express.json());
 
 // GET
 usersRouter.route("/").get(getUsers);
-usersRouter.route("/:username").get(getUserByUsername);
+usersRouter.route("/username/:username").get(getUserByUsername);
+usersRouter.route("/:uid").get(getUserByUID);
 
 // PATCH
 usersRouter.route("/:uid").patch(patchUserByUID);
