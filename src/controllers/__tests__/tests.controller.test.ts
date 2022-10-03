@@ -130,7 +130,7 @@ describe("__Users__", () => {
 
     test("should return a user if ':username' is valid ", () => {
       return request(app)
-        .get("/api/users/one")
+        .get("/api/users/username/one")
         .expect(200)
         .then(({ body }: any) => {
           const { user } = body;
