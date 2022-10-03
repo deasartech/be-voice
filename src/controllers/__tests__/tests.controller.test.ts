@@ -54,7 +54,6 @@ describe("__Topics__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { topic } = body;
-          console.log(topic);
           expect(topic).instanceOf(Array);
           expect(topic).to.have.lengthOf(1);
           const obj = topic[0];
@@ -130,11 +129,10 @@ describe("__Users__", () => {
 
     test("should return a user if ':username' is valid ", () => {
       return request(app)
-        .get("/api/users/one")
+        .get("/api/users/username/one")
         .expect(200)
         .then(({ body }: any) => {
           const { user } = body;
-          console.log(user);
           expect(user).instanceOf(Object);
           expect(user).to.have.property("_id");
           expect(user).to.have.property("uid");
@@ -169,7 +167,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response);
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.be.a("number");
@@ -191,7 +188,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response);
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.equal(1);
@@ -208,7 +204,6 @@ describe("__Users__", () => {
         date_of_birth: faker.date.birthdate(),
         phone_number: faker.phone.number(),
       };
-      console.log(update, "update details");
       return request(app)
         .patch("/api/users/631917b8cb1c9f12723ad568/details")
         .send(update)
@@ -244,7 +239,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response, "<<< response");
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.be.a("number");
