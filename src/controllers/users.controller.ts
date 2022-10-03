@@ -5,24 +5,6 @@ import UserModel, {
 } from "../models/users.model";
 import Realm from "realm";
 import { realm } from "./auth.controller";
-import multer from "multer";
-import { generateUploadUrl } from "../services/s3.service";
-
-// multer image upload
-
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
-
-// GET s3 URL
-export const getS3URL = async (req: Request, res: Response) => {
-  try {
-    const url = await generateUploadUrl();
-    res.status(200).send({ url });
-  } catch (err) {
-    console.log(err);
-    res.status(400).send({ msg: "Bad Request" });
-  }
-};
 
 // Custom User Data
 
@@ -71,17 +53,6 @@ export const getUserByUID = async (req: Request, res: Response) => {
 };
 
 // PATCH user by uid
-export const patchUserAvatarByUID = async (req: Request, res: Response) => {
-  try {
-    const { uid } = req.params;
-    console.log(req.file, "req file");
-    console.log(req.body, "req body");
-  } catch (err) {
-    console.log(err.message);
-    res.status(400).send({ msg: err.message });
-  }
-};
-
 export const patchUserByUID = async (req: Request, res: Response) => {
   try {
     const { uid } = req.params;
