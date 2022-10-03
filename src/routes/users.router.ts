@@ -1,9 +1,13 @@
 import express from "express";
 import {
   getUsers,
+<<<<<<< HEAD
   getUserByUsername,
   getUserByUID,
   getS3URL,
+=======
+  getUserByUID,
+>>>>>>> main
   patchUserByUID,
   patchUserDetailsByUID,
   patchUserReplierByUID,
@@ -25,9 +29,14 @@ usersRouter.use("/:uid/avatar", upload.single("image"));
 
 // GET
 usersRouter.route("/").get(getUsers);
+<<<<<<< HEAD
 usersRouter.route("/s3-url").get(getS3URL);
 usersRouter.route("/:uid").get(getUserByUID);
 usersRouter.route("/username/:username").get(getUserByUsername);
+=======
+usersRouter.route("/username/:username").get(getUserByUsername);
+usersRouter.route("/:uid").get(getUserByUID);
+>>>>>>> main
 
 // PATCH
 usersRouter.route("/:uid").patch(patchUserByUID);
