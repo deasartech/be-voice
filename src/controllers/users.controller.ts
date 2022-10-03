@@ -54,7 +54,7 @@ export const getUserByUsername = async (req: Request, res: Response) => {
   }
 };
 
-// GET user by username
+// GET user by uid
 export const getUserByUID = async (req: Request, res: Response) => {
   const { uid } = req.params;
   console.log(req.params);
