@@ -6,7 +6,7 @@ import UserModel, {
 import Realm from "realm";
 import { realm } from "./auth.controller";
 
-import { generateUploadUrl } from "../services/s3.service";
+// import { generateUploadUrl } from "../services/s3.service";
 
 // GET s3 URL
 // export const getS3URL = async (req: Request, res: Response) => {
