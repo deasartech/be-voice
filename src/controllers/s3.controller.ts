@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-import { generateUploadUrl } from "../services/s3.service";
+import { generateUploadUrl } from "../utils/s3";
 
 // GET s3 URL
 export const getS3URL = async (req: Request, res: Response) => {
