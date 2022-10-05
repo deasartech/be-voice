@@ -25,6 +25,7 @@ export async function connectMongoose() {
   });
 
   console.log(`Successfully connected to database: ${db}`);
+  console.log(`Success s3 bucket`);
 }
 
 export async function disconnectMongoose() {

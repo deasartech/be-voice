@@ -54,7 +54,6 @@ describe("__Topics__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { topic } = body;
-          console.log(topic);
           expect(topic).instanceOf(Array);
           expect(topic).to.have.lengthOf(1);
           const obj = topic[0];
@@ -134,7 +133,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { user } = body;
-          console.log(user);
           expect(user).instanceOf(Object);
           expect(user).to.have.property("_id");
           expect(user).to.have.property("uid");
@@ -169,7 +167,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response);
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.be.a("number");
@@ -191,7 +188,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response);
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.equal(1);
@@ -208,7 +204,6 @@ describe("__Users__", () => {
         date_of_birth: faker.date.birthdate(),
         phone_number: faker.phone.number(),
       };
-      console.log(update, "update details");
       return request(app)
         .patch("/api/users/631917b8cb1c9f12723ad568/details")
         .send(update)
@@ -244,7 +239,6 @@ describe("__Users__", () => {
         .expect(200)
         .then(({ body }: any) => {
           const { response } = body;
-          console.log(response, "<<< response");
           expect(response).instanceOf(Object);
           expect(response.acknowledged).to.equal(true);
           expect(response.modifiedCount).to.be.a("number");
@@ -661,6 +655,29 @@ describe("__Notes__", () => {
           expect(res.acknowledged).to.equal(true);
           expect(res.deletedCount).to.equal(1);
           expect(msg).to.equal("Successfully Deleted Note");
+        });
+    });
+  });
+});
+
+describe.only("__s3__", () => {
+  describe("GET s3URL", () => {
+    test("should return temp upload url for s3 bucket", () => {
+      // ACT
+      return request(app)
+        .get("/api/s3/upload-url")
+        .expect(200)
+        .then(({ body }) => {
+          // ARRANGE
+          const regex = /(^https:\/\/paranote-profile-image-bucket-01).+/g;
+          const matcher: string = body.url.match(regex);
+          const startsWith: boolean = body.url.startsWith(
+            "https://paranote-profile-image-bucket-01"
+          );
+          // ASSERT
+          expect(body.url).to.be.a("string");
+          expect(startsWith).to.equal(true);
+          expect(body.url).to.equal(matcher[0]);
         });
     });
   });
