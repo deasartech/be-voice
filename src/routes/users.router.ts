@@ -3,7 +3,6 @@ import {
   getUserByUsername,
   getUsers,
   getUserByUID,
-  getS3URL,
   patchUserByUID,
   patchUserDetailsByUID,
   patchUserReplierByUID,
@@ -16,9 +15,8 @@ usersRouter.use(express.json());
 
 // GET
 usersRouter.route("/").get(getUsers);
-usersRouter.route("/username/:username").get(getUserByUsername);
 usersRouter.route("/:uid").get(getUserByUID);
-usersRouter.route("/s3-url").get(getS3URL);
+usersRouter.route("/username/:username").get(getUserByUsername);
 
 // PATCH
 usersRouter.route("/:uid").patch(patchUserByUID);
